@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    <h2 class="mt-4"> {{ page }} </h2>
+    {% if agents %}
+       <p> {{ agents | length }} agents sont présents </p>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nom de l'agent</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for agent in agents %}
+                <tr>
+                    <th scope="row">1</th>
+                    <td>{{ agent }}</td>
+                    <td>Otto</td>
+                    <td>
+                        <button type="button" class="btn btn-primary">Primary</button>
+                        <button type="button" class="btn btn-secondary">Secondary</button>
+                        <button type="button" class="btn btn-success">Success</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p> Pas d'agents existants </p>
+    {% endif %}
+{% endblock %}

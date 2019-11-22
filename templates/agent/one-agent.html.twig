@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    <h2 class="mt-4 mb-4"> {{ page }} </h2>
+    {% if agent %}
+        <div class="row">
+            <div class="col-8">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Nom complet</strong> : {{ agent.nom }} {{ agent.postnom }} {{ agent.prenom }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Fonction </strong> : {{ agent.fonction }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Salaire </strong> : {{ agent.salaire }}
+                    </li>
+                    {% if agent.date_creation %}
+                    <li class="list-group-item">
+                        <strong>Date d'enregistrement </strong> : {{ agent.date_creation|date('d-m-Y') }}
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="/" class="btn btn-dark">Retour vers la liste d'agent</a>
+        </div>
+    {% endif %}
+{% endblock %}
+

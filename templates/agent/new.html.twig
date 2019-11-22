@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title %} Creation du nouvel agent {% endblock %}
+
+{% block body %}
+    <h2 class="mt-4 mb-4"> Creation d'un nouvel agent </h2>
+    <div class="row">
+        <div class="col-7">
+            {# {{ form(form) }} #}
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

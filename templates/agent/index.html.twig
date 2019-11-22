@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    <h2 class="mt-4"> {{ page }} </h2>
+    {% if agents %}
+       <p> {{ agents | length }} agents sont présents </p>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Identifiant</th>
+                    <th scope="col">Nom complet de l'agent</th>
+                    <th scope="col">Salaire</th>
+                    <th scope="col">Fonction</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for agent in agents %}
+                <tr>
+                    <th scope="row">{{ agent.id }}</th>
+                    <td>{{ agent.nom }} {{ agent.postnom }} {{ agent.prenom }}</td>
+                    <td> {{ agent.salaire }}  </td>
+                    <td> {{ agent.fonction }} </td>
+                    <td>
+                        <a href="/agent/{{ agent.id }}"  class="btn btn-primary"> Voir </a>
+                        <a href="/update/agent/{{agent.id}}" class="btn btn-secondary">Modifier</a>
+                        <a href="#" data-agent-id="{{ agent.id }}" class="btn btn-danger btn-remove">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p> Pas d'agents existants </p>
+    {% endif %}
+{% endblock %}
+
