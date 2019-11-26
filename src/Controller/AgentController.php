@@ -44,7 +44,6 @@ class AgentController extends AbstractController
             // $form->getData() holds the submitted values
             // but, the original `$agent` variable has also been updated
             $agent = $form->getData();
-
             // ... perform some action, such as saving the agent to the database
             // for example, if Agent is a Doctrine entity, save it!
             $entityManager = $this->getDoctrine()->getManager();
@@ -54,12 +53,10 @@ class AgentController extends AbstractController
             return $this->redirectToRoute('list_agent');
         }
 
-        $data['form']   = $form; 
+        $data['form']   = $form->createView(); 
         $data['page']   = 'Création d\'un nouvel agent'; 
 
-        return $this->render('agent/new.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render('agent/new.html.twig', $data );
     }
 
     /**

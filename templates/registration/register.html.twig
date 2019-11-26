@@ -1,0 +1,56 @@
+{# {% extends 'base.html.twig' %} #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Register{% endblock %}</title>
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet"/>
+        {% block stylesheets %} {% endblock %}
+    </head>
+
+    <body>
+
+        {% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg box-login bg-dark">
+                    <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <h1 class="h1 mb-3 text-center text-light">Bon retour chez nous</h1>
+                                <h4 class="text-light text-center">Pour rester connectez avec nous, entrez votre login et mot de passe</h4>
+                                <div class="text-center mt-4">
+                                    <a href="/login" class="btn btn-outline-light btn-lg">Connectez vous</a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-lg box-login">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 align-self-center">
+                            <h1>Créer votre compte</h1>
+                            {{ form_start(registrationForm) }}
+                                {{ form_row(registrationForm.lastname) }}
+                                {{ form_row(registrationForm.firstname) }}
+                                {{ form_row(registrationForm.email) }}
+                                {{ form_row(registrationForm.plainPassword) }}
+                                {{ form_row(registrationForm.agreeTerms) }} 
+                                <button class="btn btn-lg btn-dark">Enregistrez vous</button>
+                            {{ form_end(registrationForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        <script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}"></script>
+        <script src="{{ asset('js/popper.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <!-- bootbox code -->
+        <script src="{{ asset('js/bootbox.min.js') }}"></script>
+        <script src="{{ asset('js/bootbox.locales.min.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
+    </body>
+</html>
