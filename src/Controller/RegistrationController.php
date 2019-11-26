@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -21,16 +22,17 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 class RegistrationController extends AbstractController
 {
     private $session; 
+    private $mailer; 
 
-    public function __construct(SessionInterface $session) {
+    public function __construct(SessionInterface $session, MailerInterface $mailer) {
         $this->session  =   $session; 
+        $this->mailer   =   $mailer;
     }
     /**
      * @Route("/register", name="app_register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, 
-            MailerInterface $mailer, GuardAuthenticatorHandler $guardHandler, 
-            LoginFormAuthenticator $authenticator): Response
+            MailerInterface $mailer)
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -49,15 +51,9 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->sendEmail($user, $mailer); 
+            $this->sendEmail($user); 
 
-            // do anything else you need here, like send an email 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+            return $this->redirectToRoute('show_message');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -68,7 +64,7 @@ class RegistrationController extends AbstractController
     public function sendEmail(User $user)
     {
         $email = (new TemplatedEmail())
-                    ->from('admin@symfagents.cd')
+                    ->from('jkazdev@gmail.com')
                     ->to($user->getEmail())
                     ->subject('Bienvenue à SymfAgent')
                     ->htmlTemplate('app/mail.html.twig')
@@ -77,20 +73,34 @@ class RegistrationController extends AbstractController
                         'user' => $user
                     ]);
 
+        $this->mailer->send($email);
     }
     /**
-     * @Route("/activate", name="app_activate")
+     * @Route("/activate/user/{id}", name="app_activate")
      */
-    public function activate() {
-        // $entityManager  = $this->getDoctrine()->getManager(); 
-        // $user           = $entityManager->getRepository(User::class)->find($id); 
+    public function activate(Request $request, GuardAuthenticatorHandler $guardHandler, 
+    LoginFormAuthenticator $authenticator,$id) {
+        $entityManager  = $this->getDoctrine()->getManager(); 
+        $user           = $entityManager->getRepository(User::class)->find($id); 
 
-        // if (!$user) {
-        //     throw $this->createNotFoundException(
-        //         'No User found for id '.$id
-        //     );
-        // }
-        $user = new User();
+        if (!$user) {
+            throw $this->createNotFoundException(
+                'No User found for id '.$id
+            );
+        }
+
+        $user->setStatut(1);
+        $entityManager->flush(); 
+
+        if ($request->isMethod('POST')) {
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $authenticator,
+                'main' // firewall name in security.yaml
+            );
+        }
+
         return $this->render('app/activate-user.html.twig', [
             'user' => $user
         ]);
@@ -100,12 +110,37 @@ class RegistrationController extends AbstractController
      * @Route("/activate/login/{id}", name="app_login_activate")
      */
     public function loginAfterActivation(Request $request, GuardAuthenticatorHandler $guardHandler, 
-    LoginFormAuthenticator $authenticator, User $user) {
+    LoginFormAuthenticator $authenticator, $id) {
+
+        $entityManager  = $this->getDoctrine()->getManager(); 
+        $user           = $entityManager->getRepository(User::class)->find($id);
+         
         return $guardHandler->authenticateUserAndHandleSuccess(
             $user,
             $request,
             $authenticator,
             'main' // firewall name in security.yaml
         );
+
+        // $token = new UsernamePasswordToken(
+        //     $user,
+        //     $password,
+        //     'main',
+        //     $user->getRoles()
+        // );
+
+        // $this->get('security.token_storage')->setToken($token);
+        // $this->get('session')->set('_security_main', serialize($token));
+
+        // $this->addFlash('success', 'You are now successfully registered!');
     }
+
+    /**
+     * @Route("/message/confirmation", name="show_message")
+     */
+    public function showMessage() {
+        return $this->render('app/message-consultation.html.twig');
+    }
+
+
 }

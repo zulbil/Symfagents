@@ -18,22 +18,9 @@
                 <div class="col-md-3">
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="card-title">Activation du compte</h2>
-                            <p class="card-text">Bon retour chez nous <strong>{{ user.firstname }} {{ user.lastname }}</strong></p>
-                            <p class="card-text">Votre compte a été activé avec succès.</p>
-                            <p class="card-text">Pour finaliser le process, cliquez sur le boutton ci-dessous pour vous connectez.</p>
-                            {# <p class="card-text">
-                                <a href="/activate/login/{{ user.id }}" class="btn btn-dark btn-lg mt-4"> Connectez vous</a>
-                            </p> #}
-                            <form method="post">
-                                <input type="hidden" value="{{ user.email }}" name="email" id="inputEmail" class="form-control" required autofocus>
-                                <input type="hidden" value="{{ user.password }}" name="password" id="inputPassword" class="form-control" required>
-
-                                <input type="hidden" name="_csrf_token"
-                                    value="{{ csrf_token('authenticate') }}"
-                                >
-                                <button type="submit" class="btn btn-dark btn-lg mt-4"> Connectez vous</button>
-                            </form>
+                            <h3 class="card-title">Création du compte réussie!</h3>
+                            <p class="card-text">Votre compte a été crée avec succès</p>
+                            <p class="card-text">Pour nous assurer que votre mail existe, veuillez le consulter et cliquer sur le lien d'activation qui s'y trouve.</p>
                         </div>
                     </div>
                 </div>

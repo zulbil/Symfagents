@@ -43,9 +43,19 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      */
     public function supports(Request $request)
     {
-        return (('app_login' === $request->attributes->get('_route') 
-                || 'app_register' === $request->attributes->get('_route'))
-                && $request->isMethod('POST'));
+        // return 'app_login' === $request->attributes->get('_route')
+        //          && $request->isMethod('POST');
+        $authorization = false; 
+        if ('app_login' === $request->attributes->get('_route')
+        && $request->isMethod('POST')) {
+            $authorization = true; 
+        }
+        if ('app_login_activate' === $request->attributes->get('_route')
+        && $request->isMethod('GET')) {
+            $authorization = true; 
+        }
+
+        return $authorization; 
     }
 
     /**
@@ -67,7 +77,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             Security::LAST_USERNAME,
             $credentials['email']
         );
-
+        
         return $credentials;
     }
 
