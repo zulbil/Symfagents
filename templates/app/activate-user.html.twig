@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Register{% endblock %}</title>
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet"/>
+        {% block stylesheets %} {% endblock %}
+    </head>
+
+    <body>
+
+        {% block body %}
+        <div class="container-fluid bg-box">
+            <div class="row justify-content-center align-items-center full-height">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="card-title">C'est fait</h1>
+                            <p class="card-text">Bon retour chez nous <strong>Joel Alexandre</strong></p>
+                            <p class="card-text">Votre compte a été activé avec succès.</p>
+                            <p class="card-text">Pour finaliser le process, cliquez sur le boutton ci-dessous pour vous connectez.</p>
+                            <p class="card-text">
+                                <a href="/activate/login/" class="btn btn-dark btn-lg mt-4"> Connectez vous</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        <script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}"></script>
+        <script src="{{ asset('js/popper.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <!-- bootbox code -->
+        <script src="{{ asset('js/bootbox.min.js') }}"></script>
+        <script src="{{ asset('js/bootbox.locales.min.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
+    </body>
+</html>

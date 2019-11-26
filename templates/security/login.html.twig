@@ -45,7 +45,7 @@
                                     </div>
                                 #}
                                 {% if error %}
-                                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                    <div class="mt-4 alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                 {% endif %}
                                 <div class="text-center">
                                     <button class="btn btn-lg btn-dark mt-4" type="submit">

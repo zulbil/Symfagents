@@ -10,3 +10,7 @@
     background: rgb(2,0,36);
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,7,25,0.9923319669664741) 31%, rgba(79,88,91,1) 100%);
 }
+.full-height { height: 100vh;}
+.bg-box {
+    background: rgba(65, 60, 60, 0.149);
+}

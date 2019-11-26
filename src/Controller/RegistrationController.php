@@ -44,7 +44,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            
+            $user->setRoles(['ROLE_USER']); 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -77,5 +77,35 @@ class RegistrationController extends AbstractController
                         'user' => $user
                     ]);
 
+    }
+    /**
+     * @Route("/activate", name="app_activate")
+     */
+    public function activate() {
+        // $entityManager  = $this->getDoctrine()->getManager(); 
+        // $user           = $entityManager->getRepository(User::class)->find($id); 
+
+        // if (!$user) {
+        //     throw $this->createNotFoundException(
+        //         'No User found for id '.$id
+        //     );
+        // }
+        $user = new User();
+        return $this->render('app/activate-user.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @Route("/activate/login/{id}", name="app_login_activate")
+     */
+    public function loginAfterActivation(Request $request, GuardAuthenticatorHandler $guardHandler, 
+    LoginFormAuthenticator $authenticator, User $user) {
+        return $guardHandler->authenticateUserAndHandleSuccess(
+            $user,
+            $request,
+            $authenticator,
+            'main' // firewall name in security.yaml
+        );
     }
 }
