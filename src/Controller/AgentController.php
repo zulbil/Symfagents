@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Agent;
-use App\Form\AgentType; 
+use App\Entity\AgentTasks;
+use App\Form\AgentType;
+use App\Form\AgentTasksType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,10 +22,12 @@ class AgentController extends AbstractController
      */
     public function index()
     {
-        $agents  = $this->getDoctrine()->getRepository(Agent::class)->findAll(); 
+        $agents  = $this->getDoctrine()->getRepository(Agent::class)->findAll();
+        $user    = $this->getUser();
 
         $data['page']       = "Liste des Agents";
-        $data['agents']     = $agents; 
+        $data['agents']     = $agents;
+        $data['user']       = $user;
 
         return $this->render('agent/index.html.twig', $data );
     }
@@ -65,19 +69,43 @@ class AgentController extends AbstractController
     /**
      * @Route("/agent/{id}", name="show_agent")
      */
-    public function show(int $id)
+    public function show(int $id, Request $request)
     {
         $entityManager  = $this->getDoctrine()->getManager();
         $agent          = $entityManager->getRepository(Agent::class)->find($id);
 
         if (!$agent) {
             throw $this->createNotFoundException(
-                'No Agentt found for id '.$id
+                'No Agent found for id '.$id
             );
         }
 
         $data['page']   = 'Agent numero '.$id;
-        $data['agent']  = $agent;  
+        $data['agent']  = $agent;
+
+        $task           = new AgentTasks();
+        $task->setDateDebut(new \DateTime());
+        $task->setDateFin(new \DateTime());
+        $task->setAgentId($agent->getId());
+
+        $form           = $this->createForm(AgentTasksType::class, $task)
+             ->add('save', SubmitType::class, ['label' => 'Ajouter la tâche']);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$agent` variable has also been updated
+            $agent = $form->getData();
+            // ... perform some action, such as saving the agent to the database
+            // for example, if Agent is a Doctrine entity, save it!
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('list_agent');
+        }
+
+        $data['form']   = $form->createView();
 
         return $this->render('agent/one-agent.html.twig', $data );
     }

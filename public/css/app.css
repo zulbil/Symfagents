@@ -6,11 +6,15 @@
 }
 .box-login > row { height: 100%;}
 /* .bg-dark { height: 100%;} */
-.bg-dark {
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,7,25,0.9923319669664741) 31%, rgba(79,88,91,1) 100%);
-}
+/*.bg-dark {*/
+/*    background: rgb(2,0,36);*/
+/*    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,7,25,0.9923319669664741) 31%, rgba(79,88,91,1) 100%);*/
+/*}*/
 .full-height { height: 100vh;}
 .bg-box {
     background: rgba(65, 60, 60, 0.149);
 }
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #343a40 !important;
+}
+.nav-pills .nav-link { color: #1b1e21; }

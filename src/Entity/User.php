@@ -50,6 +50,11 @@ class User implements UserInterface
      */
     private $statut = 0;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $status;
+
 
     public function getId(): ?int
     {
@@ -161,6 +166,18 @@ class User implements UserInterface
     public function setStatut(int $statut): self
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

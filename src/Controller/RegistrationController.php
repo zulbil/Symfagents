@@ -124,5 +124,14 @@ class RegistrationController extends AbstractController
         return $this->render('app/message-consultation.html.twig');
     }
 
+    /**
+     *@Route("/profil", name="user_profile")
+     */
+    public function userProfile () {
+        $user = $this->getUser();
+
+        return $this->render('app/profile.html.twig', ['user' => $user ]);
+    }
+
 
 }

@@ -31,6 +31,16 @@
         })
 
         // Init DataTable
-        $('#table_list_agent').dataTable();
+        $('#table_list_agent').DataTable({
+            "language": {
+                "lengthMenu": "Afficher _MENU_ agents par page",
+                "zeroRecords": "Aucun agent trouvé",
+                "info": " Page _PAGE_ / _PAGES_",
+                "infoEmpty": "Pas d'agent trouvé",
+                "infoFiltered": "(filtrer sur _MAX_ total agents)"
+            }
+        });
+
+        //$('#datetimepicker1').datetimepicker();
     })
 } (jQuery))
