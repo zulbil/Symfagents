@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Agent;
+use Doctrine\DBAL\Types\DateTimeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,8 +28,7 @@ class AgentType extends AbstractType
                 ]
             ])
             ->add('salaire')
-            ->add('date_creation')
-        ;
+            ->add('date_creation');
     }
 
     public function configureOptions(OptionsResolver $resolver)

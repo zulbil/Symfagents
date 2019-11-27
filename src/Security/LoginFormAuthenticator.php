@@ -50,8 +50,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         && $request->isMethod('POST')) {
             $authorization = true; 
         }
-        if ('app_login_activate' === $request->attributes->get('_route')
-        && $request->isMethod('GET')) {
+        if ('app_activate' === $request->attributes->get('_route')
+        && $request->isMethod('POST')) {
             $authorization = true; 
         }
 
@@ -124,6 +124,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            // var_dump($this->getTargetPath($request->getSession(), $providerKey));
+            // echo "<pre>"; 
+            // var_dump($request->getSession()->get(Security::LAST_USERNAME));
+            // echo "</pre>"; 
+            // exit();
             return new RedirectResponse($targetPath);
         }
 

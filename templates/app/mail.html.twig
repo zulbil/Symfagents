@@ -32,6 +32,7 @@
 <h1 style="color: black; font-weight: bold; ">Bienvenue {{ user.firstname }} {{ user.lastname }} !</h1>
 
 <p>Vous vous êtes inscrit avec le mail : <code>{{ user.email }}</code></p>
+<p>Votre mot de passe est : <code> {{ plain_password }} </code></p>
 
 <p>
     <a href="http://localhost:8000/activate/user/{{ user.id }}" class="btn btn-dark btn-lg">Cliquez ici pour activez votre compte</a>

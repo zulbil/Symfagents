@@ -29,5 +29,8 @@
                 }
             });
         })
+
+        // Init DataTable
+        $('#table_list_agent').dataTable();
     })
 } (jQuery))

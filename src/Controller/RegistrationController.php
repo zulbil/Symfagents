@@ -46,12 +46,12 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            $user->setRoles(['ROLE_USER']); 
+            $user->setRoles(['ROLE_USER']);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->sendEmail($user); 
+            $this->sendEmail($user, $form->get('plainPassword')->getData()); 
 
             return $this->redirectToRoute('show_message');
         }
@@ -61,16 +61,18 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    public function sendEmail(User $user)
+    public function sendEmail(User $user, $password)
     {
         $email = (new TemplatedEmail())
                     ->from('jkazdev@gmail.com')
+                    //->from('joel.khang@hologram.cd')
                     ->to($user->getEmail())
                     ->subject('Bienvenue à SymfAgent')
                     ->htmlTemplate('app/mail.html.twig')
                     ->context([
                         'expiration_date' => new \DateTime('+7 days'),
-                        'user' => $user
+                        'user' => $user, 
+                        'plain_password' => $password
                     ]);
 
         $this->mailer->send($email);
@@ -90,16 +92,8 @@ class RegistrationController extends AbstractController
         }
 
         $user->setStatut(1);
-        $entityManager->flush(); 
-
-        if ($request->isMethod('POST')) {
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
-        }
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return $this->render('app/activate-user.html.twig', [
             'user' => $user
@@ -121,18 +115,6 @@ class RegistrationController extends AbstractController
             $authenticator,
             'main' // firewall name in security.yaml
         );
-
-        // $token = new UsernamePasswordToken(
-        //     $user,
-        //     $password,
-        //     'main',
-        //     $user->getRoles()
-        // );
-
-        // $this->get('security.token_storage')->setToken($token);
-        // $this->get('session')->set('_security_main', serialize($token));
-
-        // $this->addFlash('success', 'You are now successfully registered!');
     }
 
     /**

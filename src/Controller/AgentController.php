@@ -33,6 +33,9 @@ class AgentController extends AbstractController
      */
     public function createAgent(Request $request)
     {
+        // Create if only admin
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $agent  = new Agent(); 
         $agent->setDateCreation(new \DateTime()); 
 
@@ -84,6 +87,9 @@ class AgentController extends AbstractController
      */
     public function remove(Agent $agent) 
     {
+        // Remove if only admin
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($agent);
         $entityManager->flush();
@@ -96,6 +102,9 @@ class AgentController extends AbstractController
      */
     public function update($id, Request $request) 
     {
+        // Update if only admin
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $entityManager  = $this->getDoctrine()->getManager();
         $agent          = $entityManager->getRepository(Agent::class)->find($id);
 

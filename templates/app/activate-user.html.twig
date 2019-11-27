@@ -22,18 +22,18 @@
                             <p class="card-text">Bon retour chez nous <strong>{{ user.firstname }} {{ user.lastname }}</strong></p>
                             <p class="card-text">Votre compte a été activé avec succès.</p>
                             <p class="card-text">Pour finaliser le process, cliquez sur le boutton ci-dessous pour vous connectez.</p>
-                            {# <p class="card-text">
-                                <a href="/activate/login/{{ user.id }}" class="btn btn-dark btn-lg mt-4"> Connectez vous</a>
-                            </p> #}
-                            <form method="post">
-                                <input type="hidden" value="{{ user.email }}" name="email" id="inputEmail" class="form-control" required autofocus>
-                                <input type="hidden" value="{{ user.password }}" name="password" id="inputPassword" class="form-control" required>
+                            <p class="card-text">
+                                <a href="/login" class="btn btn-dark btn-lg mt-4"> Connectez vous</a>
+                            </p>
+{#                            <form method="post">#}
+{#                                <input type="hidden" value="{{ user.email }}" name="email" id="inputEmail" class="form-control" required autofocus>#}
+{#                                <input type="hidden" value="{{ user.password }}" name="password" id="inputPassword" class="form-control" required>#}
 
-                                <input type="hidden" name="_csrf_token"
-                                    value="{{ csrf_token('authenticate') }}"
-                                >
-                                <button type="submit" class="btn btn-dark btn-lg mt-4"> Connectez vous</button>
-                            </form>
+{#                                <input type="hidden" name="_csrf_token"#}
+{#                                    value="{{ csrf_token('authenticate') }}"#}
+{#                                >#}
+{#                                <button type="submit" class="btn btn-dark btn-lg mt-4"> Connectez vous</button>#}
+{#                            </form>#}
                         </div>
                     </div>
                 </div>

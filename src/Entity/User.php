@@ -50,6 +50,7 @@ class User implements UserInterface
      */
     private $statut = 0;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -163,4 +164,5 @@ class User implements UserInterface
 
         return $this;
     }
+
 }
