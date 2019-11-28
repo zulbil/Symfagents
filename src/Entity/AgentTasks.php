@@ -29,17 +29,27 @@ class AgentTasks
     /**
      * @ORM\Column(type="datetime")
      */
-    private $date_debut;
+    public $date_debut;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $date_fin;
+    public $date_fin;
 
     /**
      * @ORM\Column(type="integer")
      */
     private $agent_id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $statut;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $priorite;
 
     public function getId(): ?int
     {
@@ -105,4 +115,29 @@ class AgentTasks
 
         return $this;
     }
+
+    public function getStatut(): ?int
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(int $statut): self
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getPriorite(): ?int
+    {
+        return $this->priorite;
+    }
+
+    public function setPriorite(int $priorite): self
+    {
+        $this->priorite = $priorite;
+
+        return $this;
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\AgentTasks;
 use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +21,14 @@ class AgentTasksType extends AbstractType
             ->add('date_debut')
             ->add('date_fin')
             ->add('agent_id', HiddenType::class)
-        ;
+            ->add('priorite', ChoiceType::class, [
+                'choices' => [
+                    'Basse' => 0,
+                    'Moyenne' => 1,
+                    'Elevé' => 2
+                ],
+                'label' => 'Priorité'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

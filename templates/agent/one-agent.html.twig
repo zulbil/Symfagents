@@ -33,6 +33,58 @@
                 </button>
             {% endif %}
         </div>
+        {% if tasks %}
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom de la tâche</th>
+                        <th scope="col">Description de la tâche</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Date de début</th>
+                        <th scope="col">Date de fin</th>
+                        <th scope="col">Heure de début</th>
+                        <th scope="col">Heure de fin</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks  %}
+
+                        <tr>
+                            <th scope="row">{{ task.id }}</th>
+                            <td>{{ task.nom }}</td>
+                            <td>{{ task.description}}</td>
+                            <td><span class="badge badge-secondary">En cours</span></td>
+                            <td>{{ task.date_debut | date("d M Y", "Europe/Paris") }}</td>
+                            <td>{{ task.date_fin | date("d M Y", "Europe/Paris") }}</td>
+                            <td>{{ task.date_debut | date("h:i") }}</td>
+                            <td>{{ task.date_fin | date("h:i") }}</td>
+                            <td>
+                                <a class="btn btn-primary mb-2" href="/agent/{{ agent.id }}/task/{{ task.id }}">
+                                    Voir
+                                </a>
+                                {% if is_granted('ROLE_ADMIN') %}
+
+                                    <button class="btn btn-success mb-2" data-toggle="modal" data-target="#editModal">
+                                        Modifier
+                                    </button>
+                                    <button class="btn btn-danger add-agent">
+                                        Supprimer
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <div class="alert alert-danger mt-4" role="alert">
+                Aucune tâche n'a été attribué à cet agent
+            </div>
+        {% endif %}
 
         <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -47,8 +99,27 @@
                         {{ form(form) }}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modifier la tâche</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form(form) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary">Enregistrer</button>
                     </div>
                 </div>
             </div>

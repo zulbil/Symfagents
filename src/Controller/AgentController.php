@@ -80,16 +80,20 @@ class AgentController extends AbstractController
             );
         }
 
-        $data['page']   = 'Agent numero '.$id;
+        $data['page']   = 'Agent numéro '.$id;
         $data['agent']  = $agent;
+        $data['tasks']  = $this->getDoctrine()->getManager()->getRepository(AgentTasks::class)->findBy(
+                            ['agent_id' => $id]
+                           );
 
         $task           = new AgentTasks();
         $task->setDateDebut(new \DateTime());
         $task->setDateFin(new \DateTime());
         $task->setAgentId($agent->getId());
+        $task->setStatut(0);
 
         $form           = $this->createForm(AgentTasksType::class, $task)
-             ->add('save', SubmitType::class, ['label' => 'Ajouter la tâche']);
+                               ->add('save', SubmitType::class, ['label' => 'Ajouter la tâche']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -102,7 +106,7 @@ class AgentController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_agent');
+            return $this->redirectToRoute('show_agent',["id" => $id ]);
         }
 
         $data['form']   = $form->createView();
