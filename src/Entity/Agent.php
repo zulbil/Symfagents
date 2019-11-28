@@ -59,6 +59,11 @@ class Agent
      */
     public $date_creation;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="agent", cascade={"persist", "remove"})
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -132,6 +137,24 @@ class Agent
     public function setDateCreation(\DateTime $date_creation): self
     {
         $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newAgent = null === $user ? null : $this;
+        if ($user->getAgent() !== $newAgent) {
+            $user->setAgent($newAgent);
+        }
 
         return $this;
     }

@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+<h2 class="mt-4 mb-4"> {{ page }} </h2>
+{% if task %}
+    <div class="row">
+    <div class="col-md-10">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <b>Titre de la tâche</b> : {{ task.nom }}
+            </li>
+            <li class="list-group-item">
+                <b>Description de la tâche </b> : {{ task.description }}
+            </li>
+            <li class="list-group-item">
+                <b>Priorité  </b> :
+                {% if task.priorite == 0 %}
+                    <span class="badge badge-success"> Basse </span>
+                {% elseif task.priorite == 1 %}
+                    <span class="badge badge-warning"> Moyenne </span>
+                {% else %}
+                    <span class="badge badge-danger"> Elévé </span>
+                {% endif %}
+            </li>
+            <li class="list-group-item">
+                <b>Statut  </b> :
+                {% if task.statut == 0 %}
+                    <span class="badge badge-secondary"> En cours... </span>
+                {% elseif task.statut == 1 %}
+                    <span class="badge badge-success"> Terminé </span>
+                {% endif %}
+            </li>
+            <li class="list-group-item">
+                <b>Date de début: </b> {{ task.date_debut | date("D M Y") }}
+            </li>
+            <li class="list-group-item">
+                <b>Date de fin: </b> {{ task.date_fin | date("D M Y") }}
+            </li>
+        </ul>
+    </div>
+</div>
+    <div class="mt-4">
+        <a href="/agent/{{ task.agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a class="btn btn-primary add-agent" href="/agent/{{ task.agent_id }}/task/edit/{{ task.id }}">
+                Modifier cette tâche
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

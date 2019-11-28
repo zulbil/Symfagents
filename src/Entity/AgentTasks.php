@@ -39,7 +39,7 @@ class AgentTasks
     /**
      * @ORM\Column(type="integer")
      */
-    private $agent_id;
+    public $agent_id;
 
     /**
      * @ORM\Column(type="integer")

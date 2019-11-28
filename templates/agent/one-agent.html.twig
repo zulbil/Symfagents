@@ -37,7 +37,7 @@
             <table class="table mt-4">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">Priorité</th>
                         <th scope="col">Nom de la tâche</th>
                         <th scope="col">Description de la tâche</th>
                         <th scope="col">Etat</th>
@@ -52,7 +52,15 @@
                     {% for task in tasks  %}
 
                         <tr>
-                            <th scope="row">{{ task.id }}</th>
+                            <th scope="row">
+                                {% if task.priorite == 0 %}
+                                    <span class="badge badge-success">Basse</span>
+                                {% elseif task.priorite == 1 %}
+                                    <span class="badge badge-warning">Moyenne</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Elévé</span>
+                                {% endif %}
+                            </th>
                             <td>{{ task.nom }}</td>
                             <td>{{ task.description}}</td>
                             <td><span class="badge badge-secondary">En cours</span></td>
@@ -61,15 +69,15 @@
                             <td>{{ task.date_debut | date("h:i") }}</td>
                             <td>{{ task.date_fin | date("h:i") }}</td>
                             <td>
-                                <a class="btn btn-primary mb-2" href="/agent/{{ agent.id }}/task/{{ task.id }}">
+                                <a class="btn btn-primary btn-see mb-2" href="/task/{{ task.id }}">
                                     Voir
                                 </a>
                                 {% if is_granted('ROLE_ADMIN') %}
 
-                                    <button class="btn btn-success mb-2" data-toggle="modal" data-target="#editModal">
+                                    <a class="btn btn-success btn-edit mb-2" href="/agent/{{ agent.id }}/task/edit/{{ task.id }}">
                                         Modifier
-                                    </button>
-                                    <button class="btn btn-danger add-agent">
+                                    </a>
+                                    <button class="btn btn-danger btn-remove-task add-agent" data-agent-id="{{ agent.id }}" data-task-id="{{ task.id }}">
                                         Supprimer
                                     </button>
                                 {% endif %}
@@ -115,7 +123,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{ form(form) }}
+{#                        {{ form(editForm) }}#}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -124,6 +132,7 @@
                 </div>
             </div>
         </div>
+
     {% endif %}
 {% endblock %}
 

@@ -1,0 +1,14 @@
+{% extends"base.html.twig" %}
+
+{% block title %} {{ page}} {% endblock %}
+
+{% block body %}
+    <h2 class="mt-4"> {{ page }} </h2>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="mt-4">
+                {{ form(editForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

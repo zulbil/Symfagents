@@ -42,5 +42,37 @@
         });
 
         //$('#datetimepicker1').datetimepicker();
+        $('.btn-remove-task').on('click', function (event) {
+            var agent_id    = $(this).data("agent-id");
+            const task_id   = $(this).data("task-id");
+            var url         = "/remove/task/"+task_id;
+            bootbox.confirm({
+                message: "Etes vous sûr de vouloir supprimer cette tâche",
+                buttons: {
+                    confirm: {
+                        label: 'Oui',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Non',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if ( result ) {
+                        $.ajax({
+                            method: "GET",
+                            url: url
+                        }).done(function( msg ) {
+                            if (msg) {
+                                console.log(msg);
+                            }
+                            //window.location.reload();
+                        });
+                    }
+
+                }
+            });
+        })
     })
 } (jQuery))

@@ -55,6 +55,11 @@ class User implements UserInterface
      */
     private $status;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Agent", inversedBy="user", cascade={"persist", "remove"})
+     */
+    private $agent;
+
 
     public function getId(): ?int
     {
@@ -178,6 +183,18 @@ class User implements UserInterface
     public function setStatus(?int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getAgent(): ?Agent
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(?Agent $agent): self
+    {
+        $this->agent = $agent;
 
         return $this;
     }
