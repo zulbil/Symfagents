@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="text-right mt-4">
+            <a class="btn btn-dark" href="/new/projet">Ajouter un nouveau projet</a>
+        </div>
+    {% endif %}
+    {% if projets %}
+        <p> {{ projets | length }} agents sont présents </p>
+        <table class="table" id="table_list_agent">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Identifiant</th>
+                <th scope="col">Titre du projet</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for projet in projets %}
+                <tr>
+                    <th scope="row">{{ projet.id }}</th>
+                    <td> {{ projet.nom }} </td>
+                    <td>
+                        {% set description %} {{ projet.description }} {% endset %} {{ description }}
+                    </td>
+                    <td>
+                        <a href="/projet/{{ projet.id }}"  class="btn btn-primary mb-1"> Voir </a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="/projet/edit/{{ projet.id }}" class="btn btn-secondary mb-1"> Modifier</a>
+                            <a href="#" data-agent-id="{{ projet.id }}" class="btn btn-danger btn-remove mb-1"> Supprimer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p> Pas de projets existants </p>
+    {% endif %}
+{% endblock %}

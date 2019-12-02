@@ -43,23 +43,13 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/test", name="new_agent", methods={"GET"})
+     * @Route("/test", name="test", methods={"GET"})
      */
     public function test()
     {
-        $data               = array(); 
-        $page               = "Creation d'un nouvel Agent"; 
-        $date               = date("Y-m-d h:i:s"); 
-
-        $data['page']       = ucfirst($page);
-        $data['date']       = $date; 
-
-        //return $this->render('app/new-agent.html.twig', $data);
-
-        $current_date = date("Y-m-d H:i:s"); 
-        $dt = \DateTime::createFromFormat('Y-m-d h:i:s', $current_date);  
-
-        var_dump($dt); 
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // Output: 54esmdr0qf
+        echo substr(str_shuffle($permitted_chars), 0, 10);
 
         exit(); 
     }

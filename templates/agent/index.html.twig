@@ -4,6 +4,11 @@
 
 {% block body %}
     <h2 class="mt-4"> {{ page }} </h2>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="text-right">
+            <a class="btn btn-primary" href="/new/agent">Nouvel Agent</a>
+        </div>
+    {% endif %}
     {% if agents %}
        <p> {{ agents | length }} agents sont présents </p>
         <table class="table" id="table_list_agent">

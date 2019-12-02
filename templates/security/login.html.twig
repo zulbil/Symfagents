@@ -24,7 +24,7 @@
                                     </div>
                                 {% endif %}
 
-                                <h1 class="h1 mb-3 text-center font-weight-normal">Connectez vous sur <strong>SymfAgents</strong></h1>
+                                <h1 class="h1 mb-3 font-weight-normal">Connectez vous sur <b>SymfAgents</b></h1>
                                 <label for="inputEmail">Email</label>
                                 <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
                                 <label for="inputPassword">Password</label>
@@ -47,7 +47,7 @@
                                 {% if error %}
                                     <div class="mt-4 alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                 {% endif %}
-                                <div class="text-center">
+                                <div class="">
                                     <button class="btn btn-lg btn-dark mt-4" type="submit">
                                         Connectez vous
                                     </button>

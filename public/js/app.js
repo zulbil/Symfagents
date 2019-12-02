@@ -67,7 +67,7 @@
                             if (msg) {
                                 console.log(msg);
                             }
-                            //window.location.reload();
+                            window.location.reload();
                         });
                     }
 

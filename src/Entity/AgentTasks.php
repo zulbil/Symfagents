@@ -39,17 +39,27 @@ class AgentTasks
     /**
      * @ORM\Column(type="integer")
      */
-    public $agent_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $statut;
 
     /**
      * @ORM\Column(type="integer")
      */
     private $priorite;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tasks")
+     */
+    private $agent;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $observation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Projet", inversedBy="tasks")
+     */
+    private $projet;
 
     public function getId(): ?int
     {
@@ -104,18 +114,6 @@ class AgentTasks
         return $this;
     }
 
-    public function getAgentId(): ?int
-    {
-        return $this->agent_id;
-    }
-
-    public function setAgentId(int $agent_id): self
-    {
-        $this->agent_id = $agent_id;
-
-        return $this;
-    }
-
     public function getStatut(): ?int
     {
         return $this->statut;
@@ -136,6 +134,42 @@ class AgentTasks
     public function setPriorite(int $priorite): self
     {
         $this->priorite = $priorite;
+
+        return $this;
+    }
+
+    public function getAgent(): ?User
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(?User $agent): self
+    {
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    public function getObservation(): ?string
+    {
+        return $this->observation;
+    }
+
+    public function setObservation(?string $observation): self
+    {
+        $this->observation = $observation;
+
+        return $this;
+    }
+
+    public function getProjet(): ?Projet
+    {
+        return $this->projet;
+    }
+
+    public function setProjet(?Projet $projet): self
+    {
+        $this->projet = $projet;
 
         return $this;
     }

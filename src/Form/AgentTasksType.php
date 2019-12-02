@@ -15,12 +15,13 @@ class AgentTasksType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        //$user = $this->getUser();
+
         $builder
             ->add('nom')
             ->add('description', TextareaType::class)
             ->add('date_debut')
             ->add('date_fin')
-            ->add('agent_id', HiddenType::class)
             ->add('priorite', ChoiceType::class, [
                 'choices' => [
                     'Basse' => 0,

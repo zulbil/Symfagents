@@ -15,13 +15,9 @@
                         <strong>Fonction </strong> : {{ agent.fonction }}
                     </li>
                     <li class="list-group-item">
-                        <strong>Salaire </strong> : {{ agent.salaire }}
+                        <strong>Salaire </strong> : {{ agent.salaire }} $
                     </li>
-                    {% if agent.date_creation %}
-                    <li class="list-group-item">
-                        <strong>Date d'enregistrement </strong> : {{ agent.date_creation|date('d-m-Y') }}
-                    </li>
-                    {% endif %}
+
                 </ul>
             </div>
         </div>
@@ -33,6 +29,7 @@
                 </button>
             {% endif %}
         </div>
+
         {% if tasks %}
             <table class="table mt-4">
                 <thead>

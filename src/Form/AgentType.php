@@ -6,6 +6,7 @@ use App\Entity\Agent;
 use Doctrine\DBAL\Types\DateTimeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +19,10 @@ class AgentType extends AbstractType
             ->add('nom')
             ->add('postnom')
             ->add('prenom')
+            ->add('email', EmailType::class, [
+                "mapped" => false,
+                "label" => "Email"
+            ])
             ->add('fonction', ChoiceType::class, [
                 'choices' => [
                     'Developpeur' => 'Developpeur',
@@ -27,8 +32,7 @@ class AgentType extends AbstractType
                     'SysAdmin' => 'SysAdmin'
                 ]
             ])
-            ->add('salaire')
-            ->add('date_creation');
+            ->add('salaire');
     }
 
     public function configureOptions(OptionsResolver $resolver)

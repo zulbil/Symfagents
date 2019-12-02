@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="Il existe déjà un compte avec cet email")
  */
 class User implements UserInterface
 {
@@ -36,14 +39,39 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Regex("/^\w+/")
      */
-    private $firstname;
+    private $nom;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Regex("/^\w+/")
      */
-    private $lastname;
+    private $postnom;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Regex("/^\w+/")
+     */
+    private $prenom;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Regex("/^\w+/")
+     */
+    private $fonction;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Positive
+     */
+    private $salaire;
 
     /**
      * @ORM\Column(type="integer")
@@ -51,15 +79,14 @@ class User implements UserInterface
     private $statut = 0;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\AgentTasks", mappedBy="agent")
      */
-    private $status;
+    private $tasks;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Agent", inversedBy="user", cascade={"persist", "remove"})
-     */
-    private $agent;
-
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -139,26 +166,62 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getFirstname(): ?string
+    public function getNom(): ?string
     {
-        return $this->firstname;
+        return $this->nom;
     }
 
-    public function setFirstname(string $firstname): self
+    public function setNom(string $nom): self
     {
-        $this->firstname = $firstname;
+        $this->nom = $nom;
 
         return $this;
     }
 
-    public function getLastname(): ?string
+    public function getPostnom(): ?string
     {
-        return $this->lastname;
+        return $this->postnom;
     }
 
-    public function setLastname(string $lastname): self
+    public function setPostnom(string $postnom): self
     {
-        $this->lastname = $lastname;
+        $this->postnom = $postnom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getFonction(): ?string
+    {
+        return $this->fonction;
+    }
+
+    public function setFonction(string $fonction): self
+    {
+        $this->fonction = $fonction;
+
+        return $this;
+    }
+
+    public function getSalaire(): ?int
+    {
+        return $this->salaire;
+    }
+
+    public function setSalaire(int $salaire): self
+    {
+        $this->salaire = $salaire;
 
         return $this;
     }
@@ -175,26 +238,33 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getStatus(): ?int
+    /**
+     * @return Collection|AgentTasks[]
+     */
+    public function getTasks(): Collection
     {
-        return $this->status;
+        return $this->tasks;
     }
 
-    public function setStatus(?int $status): self
+    public function addTask(AgentTasks $task): self
     {
-        $this->status = $status;
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setAgent($this);
+        }
 
         return $this;
     }
 
-    public function getAgent(): ?Agent
+    public function removeTask(AgentTasks $task): self
     {
-        return $this->agent;
-    }
-
-    public function setAgent(?Agent $agent): self
-    {
-        $this->agent = $agent;
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getAgent() === $this) {
+                $task->setAgent(null);
+            }
+        }
 
         return $this;
     }

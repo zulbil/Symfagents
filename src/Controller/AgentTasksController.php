@@ -92,6 +92,7 @@ class AgentTasksController extends AbstractController
 
         $data['page']   = 'Détails de la tâche numéro  '.$task_id;
         $data['task']   = $task;
+        $data['agent_id'] = $task->getAgent()->getId();
 
         return $this->render('agent_tasks/task.html.twig', $data );
     }

@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\MakerBundle\Security\InteractiveSecurityHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -31,10 +32,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->entityManager        = $entityManager;
+        $this->urlGenerator         = $urlGenerator;
+        $this->csrfTokenManager     = $csrfTokenManager;
+        $this->passwordEncoder      = $passwordEncoder;
     }
     /**
      * It checks to see if the current route is named app_login and if the request
@@ -102,6 +103,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new CustomUserMessageAuthenticationException("Aucun compte ne correspond à cet email.");
         }
 
+        if($user->getStatut() == 0) {
+            throw new CustomUserMessageAuthenticationException("Votre compte n'est pas activé");
+        }
+
         return $user;
     }
 
@@ -123,17 +128,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        /*
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            // var_dump($this->getTargetPath($request->getSession(), $providerKey));
-            // echo "<pre>"; 
-            // var_dump($request->getSession()->get(Security::LAST_USERNAME));
-            // echo "</pre>"; 
-            // exit();
             return new RedirectResponse($targetPath);
-        }
+        }*/
 
-        return new RedirectResponse($this->urlGenerator->generate('list_agent'));
-        //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
+
+        if($hasAccess) {
+            return new RedirectResponse($this->urlGenerator->generate('list_agent'));
+        }
+        return new RedirectResponse($this->urlGenerator->generate('user_profile'));
     }
 
     protected function getLoginUrl()

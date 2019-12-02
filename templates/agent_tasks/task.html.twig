@@ -41,10 +41,11 @@
         </ul>
     </div>
 </div>
+
     <div class="mt-4">
-        <a href="/agent/{{ task.agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>
+        <a href="/agent/{{ agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>
         {% if is_granted('ROLE_ADMIN') %}
-            <a class="btn btn-primary add-agent" href="/agent/{{ task.agent_id }}/task/edit/{{ task.id }}">
+            <a class="btn btn-primary add-agent" href="/agent/{{ agent_id }}/task/edit/{{ task.id }}">
                 Modifier cette tâche
             </a>
         {% endif %}
