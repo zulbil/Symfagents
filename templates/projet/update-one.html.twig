@@ -3,19 +3,22 @@
 {% block title %} {{ page }}{% endblock %}
 
 {% block body %}
-    <h2 class="mt-4 mb-4"> {{ page }} </h2>
     {% if projet %}
         <div class="row">
-            <div class="col-8">
-                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                    {{ form_widget(form) }}
-                {{ form_end(form) }}
+            <div class="col-md-12">
+                <div class="kt-portlet pd-20">
+                    <div class="col-md-8">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                            {{ form_widget(form) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mt-4">
             <a href="/projets" class="btn btn-dark">Retour vers la liste des projets</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <button class="btn btn-dark"> Attribuer des agents à ce projet </button>
+                <button class="btn btn-dark"> Attribuer des tâches à ce projet </button>
             {% endif %}
         </div>
 

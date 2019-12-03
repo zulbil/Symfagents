@@ -3,42 +3,77 @@
 {% block title %} {{ page }} {% endblock %}
 
 {% block body %}
+    <div class="row">
     {% if is_granted('ROLE_ADMIN') %}
-        <div class="text-right mt-4">
-            <a class="btn btn-dark" href="/new/projet">Ajouter un nouveau projet</a>
+        <div class="col-lg-12">
+            <div class="text-right mt-4">
+                <a class="btn btn-dark" href="/new/projet">Commencer un nouveau projet</a>
+            </div>
         </div>
     {% endif %}
     {% if projets %}
-        <p> {{ projets | length }} agents sont présents </p>
-        <table class="table" id="table_list_agent">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Identifiant</th>
-                <th scope="col">Titre du projet</th>
-                <th scope="col">Description</th>
-                <th scope="col">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for projet in projets %}
-                <tr>
-                    <th scope="row">{{ projet.id }}</th>
-                    <td> {{ projet.nom }} </td>
-                    <td>
-                        {% set description %} {{ projet.description }} {% endset %} {{ description }}
-                    </td>
-                    <td>
-                        <a href="/projet/{{ projet.id }}"  class="btn btn-primary mb-1"> Voir </a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="/projet/edit/{{ projet.id }}" class="btn btn-secondary mb-1"> Modifier</a>
-                            <a href="#" data-agent-id="{{ projet.id }}" class="btn btn-danger btn-remove mb-1"> Supprimer</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% for projet in projets %}
+            <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+                <!--begin::Portlet-->
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head kt-portlet__head--noborder">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">Projet #{{ projet.id }}</h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="kt-portlet__head-toolbar-wrapper">
+                                <div class="dropdown dropdown-inline">
+                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="flaticon-more-1"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul class="kt-nav">
+                                            <li class="kt-nav__section kt-nav__section--first">
+                                                <span class="kt-nav__section-text">Actions</span>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="/projet/edit/{{ projet.id }}" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-edit"></i>
+                                                    <span class="kt-nav__link-text">Modifier</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link btn-remove" data-agent-id="{{ projet.id }}">
+                                                    <i class="kt-nav__link-icon la la-trash"></i>
+                                                    <span class="kt-nav__link-text">Supprimer</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-portlet__body--fluid">
+                        <div class="kt-widget-13">
+                            <div class="kt-widget-13__body">
+                                <a class="kt-widget-13__title" href="#"> {{ projet.nom }}</a>
+                                <div class="kt-widget-13__desc">
+                                    {{ projet.description }}
+                                </div>
+                            </div>
+                            <div class="kt-widget-13__foot">
+                                <div class="kt-widget-13__label">
+                                    <div class="btn btn-sm btn-label btn-bold">
+                                        03 SEP, 2018
+                                    </div>
+                                </div>
+                                <div class="kt-widget-13__toolbar">
+                                    <a href="/projet/{{ projet.id }}" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Portlet-->	</div>
+        {% endfor %}
     {% else %}
         <p> Pas de projets existants </p>
     {% endif %}
+    </div>
 {% endblock %}

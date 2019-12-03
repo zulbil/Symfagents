@@ -1,0 +1,1 @@
+"use strict";var KTProfileOverview3={init:function(){new KTOffcanvas("kt_profile_aside",{overlay:!0,baseClass:"kt-app__aside",closeBy:"kt_profile_aside_close",toggleBy:"kt_subheader_mobile_toggle"})}};KTUtil.ready(function(){KTProfileOverview3.init()});

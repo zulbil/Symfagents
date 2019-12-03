@@ -3,8 +3,8 @@
 {% block title %} {{ page }} {% endblock %}
 
 {% block body %}
-    <h2 class="mt-4 mb-4"> {{ page }} </h2>
     {% if projet %}
+        <h2 class="mt-4 mb-4"> {{ projet.nom }} </h2>
         <div class="row">
             <div class="col-8">
                 <ul class="list-group">
@@ -20,7 +20,7 @@
         <div class="mt-4">
             <a href="/projets" class="btn btn-dark">Retour vers la liste des projets</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <button class="btn btn-dark"> Attribuer des agents à ce projet </button>
+                <button class="btn btn-dark"> Ajouter des tâches </button>
             {% endif %}
         </div>
 
