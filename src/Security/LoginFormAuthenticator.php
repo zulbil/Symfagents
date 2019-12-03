@@ -4,7 +4,6 @@ namespace App\Security;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\MakerBundle\Security\InteractiveSecurityHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -29,13 +28,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     private $urlGenerator;
     private $csrfTokenManager;
     private $passwordEncoder;
+    private $security;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder, Security $security)
     {
         $this->entityManager        = $entityManager;
         $this->urlGenerator         = $urlGenerator;
         $this->csrfTokenManager     = $csrfTokenManager;
         $this->passwordEncoder      = $passwordEncoder;
+        $this->security             = $security;
     }
     /**
      * It checks to see if the current route is named app_login and if the request
@@ -131,14 +132,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         /*
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
-        }*/
-
-        $hasAccess = $this->isGranted('ROLE_ADMIN');
+        }
+        */
+        $hasAccess = $this->security->isGranted('ROLE_ADMIN');
+        $user = $this->security->getUser();
+        $user_id = $user->getId();
 
         if($hasAccess) {
-            return new RedirectResponse($this->urlGenerator->generate('list_agent'));
+            return new RedirectResponse($this->urlGenerator->generate('projets'));
         }
-        return new RedirectResponse($this->urlGenerator->generate('user_profile'));
+        return new RedirectResponse($this->urlGenerator->generate('task_list', ['user_id' => $user_id]));
     }
 
     protected function getLoginUrl()
