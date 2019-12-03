@@ -74,5 +74,46 @@
                 }
             });
         })
+
+        // $(".members-form select").on("click", function (){
+        //     //console.log("Hello");
+        //     var url = "/members/list";
+        //     var option;
+        //     $.ajax({
+        //         method: "GET",
+        //         url: url
+        //     }).done(function( msg ) {
+        //         if (msg) {
+        //             var users = msg.members;
+        //             $.each(users, function (index, user){
+        //                 option += `
+        //                     <option value="${user.id}">${user.prenom} ${user.nom}</option>
+        //                 `;
+        //             })
+        //         }
+        //     });
+        //     $("select#members").html(option);
+        // })
+
+        $("select#members").select2();
+        $(".btn-submit-members").on("click", function (event){
+            event.preventDefault();
+            var user            = $("select#members").val();
+            var projet_id       = $("input[name='projet_id']").val();
+            console.log(user);
+            $.ajax({
+                method: "POST",
+                url : "/members/invite",
+                data: {
+                    "user_id": user,
+                    "projet_id": projet_id
+                }
+            }).done(function (data) {
+                if(data.message) {
+                    toastr.success('Have fun storming the castle!', 'Miracle Max Says')
+                }
+            })
+        })
+
     })
 } (jQuery))

@@ -228,4 +228,15 @@ class AgentController extends AbstractController
 
         $this->mailer->send($email);
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/members/list", name="members_list")
+     */
+    public function getAllUserExceptAdmin() {
+        $entityManager  = $this->getDoctrine()->getManager();
+        $users          = $entityManager->getRepository(User::class)->findAllNormalsUsers();
+
+        return $this->json(['members' => $users ]);
+    }
 }

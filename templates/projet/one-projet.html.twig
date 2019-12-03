@@ -171,13 +171,20 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="" method="post">
-
+                        <form action="" method="post" class="members-form">
+                            <div class="form-group">
+                                <select name="members" id="members" class="form-control">
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.prenom }} {{ user.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="projet_id" value="{{ projet.id }}">
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="button" class="btn btn-primary">Enregistrer</button>
+                        <button type="button" class="btn btn-primary btn-submit-members" data-dismiss="modal">Enregistrer</button>
                     </div>
                 </div>
             </div>

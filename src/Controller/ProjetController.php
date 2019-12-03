@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\AgentTasks;
 use App\Entity\Projet;
+use App\Entity\User;
 use App\Form\AgentTasksType;
 use App\Form\ProjetType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -102,6 +103,7 @@ class ProjetController extends AbstractController
         $data['projet']     = $projet;
         $data['tasks']      = $tasks;
         $data['page']       = "Détails du projet #$id";
+        $data['users']      = $this->getDoctrine()->getManager()->getRepository(User::class)->findAllNormalsUsers();
 
         return $this->render("projet/one-projet.html.twig", $data);
     }
@@ -139,15 +141,27 @@ class ProjetController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/members/list", name="members_list")
+     * @param Request $request
+     * @Route("/members/invite",name="invite_member")
+     * @return Json Array
      */
-    public function getAllUserExceptAdmin() {
+    public function addMemberToProject(Request $request) {
         $entityManager  = $this->getDoctrine()->getManager();
-        $users          = $entityManager->getRepository(User::class)->findBy(["roles" => ["ROLE_USER"]]);
+        //if($request->isMethod("POST")) {
+           $user_id     = (int)$request->request->get("user_id");
+           $projet_id   = (int)$request->request->get('projet_id');
 
-        return $this->json(['members' => $users ]);
+           $user        = $entityManager->getRepository(User::class)->find($user_id);
+           $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
+
+           $user->setProjet($projet);
+
+           $entityManager->persist($projet);
+           $entityManager->persist($user);
+
+           $entityManager->flush();
+
+           return $this->json([ "message" => "success" ]);
+
     }
-
-
 }

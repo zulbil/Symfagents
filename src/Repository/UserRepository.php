@@ -64,4 +64,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
+
+    /**
+     *@params array
+     *@return array of user
+     */
+    public function findAllNormalsUsers():array
+    {
+        $conn   =   $this->getEntityManager()->getConnection();
+        $sql    =   "SELECT *  FROM `user` WHERE `roles` LIKE '%ROLE_USER%'";
+
+        $stmt   =   $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of Product objects
+        return $stmt->fetchAll();
+    }
 }
