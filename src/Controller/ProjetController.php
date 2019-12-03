@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AgentTasks;
 use App\Entity\Projet;
+use App\Form\AgentTasksType;
 use App\Form\ProjetType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -69,11 +71,36 @@ class ProjetController extends AbstractController
     /**
      *@Route("/projet/{id}", name="single_projet")
      */
-    public function showProjet($id) {
-        $projet             = $this->getDoctrine()->getManager()->getRepository(Projet::class)->find($id);
-
+    public function showProjet($id, Request $request) {
         $data               = array();
+        $projet             = $this->getDoctrine()->getManager()->getRepository(Projet::class)->find($id);
+        $tasks              = $projet->getTasks();
+        $task   = new AgentTasks();
+        $task->setDateDebut(new \DateTime());
+        $task->setDateFin(new \DateTime());
+        $form_task          = $this->createForm(AgentTasksType::class, $task)
+                                   ->add('save', SubmitType::class, [
+                                       "attr" => ["class" => "btn btn-primary btn-pill"],
+                                       "label" => "Ajouter la tâche"
+                                   ]);
+        $form_task->handleRequest($request);
+        if ($form_task->isSubmitted() && $form_task->isValid()) {
+            $task = $form_task->getData();
+            $task->setProjet($projet);
+            $task->setStatut(0);
+            $projet->addTask($task);
+
+            $this->getDoctrine()->getManager()->persist($task);
+            $this->getDoctrine()->getManager()->persist($projet);
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute("single_projet", ["id" => $id ]);
+
+        }
+
+        $data['form_task']       = $form_task->createView();
         $data['projet']     = $projet;
+        $data['tasks']      = $tasks;
         $data['page']       = "Détails du projet #$id";
 
         return $this->render("projet/one-projet.html.twig", $data);
@@ -109,6 +136,17 @@ class ProjetController extends AbstractController
         $data['projet'] = $projet;
 
         return $this->render('projet/update-one.html.twig', $data);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/members/list", name="members_list")
+     */
+    public function getAllUserExceptAdmin() {
+        $entityManager  = $this->getDoctrine()->getManager();
+        $users          = $entityManager->getRepository(User::class)->findBy(["roles" => ["ROLE_USER"]]);
+
+        return $this->json(['members' => $users ]);
     }
 
 

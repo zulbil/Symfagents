@@ -4,24 +4,183 @@
 
 {% block body %}
     {% if projet %}
-        <h2 class="mt-4 mb-4"> {{ projet.nom }} </h2>
+{#        <h5 class="mt-4 mb-4"> {{ projet.nom }} </h5>#}
+{#        <div class="row">#}
+{#            <div class="col-8">#}
+{#                <ul class="list-group">#}
+{#                    <li class="list-group-item">#}
+{#                        <strong>Titre</strong> : {{ projet.nom }}#}
+{#                    </li>#}
+{#                    <li class="list-group-item">#}
+{#                        <strong>Description </strong> : {{ projet.description }}#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="mt-4">#}
+{#            <a href="/projets" class="btn btn-dark">Retour vers la liste des projets</a>#}
+{#            {% if is_granted('ROLE_ADMIN') %}#}
+{#                <button class="btn btn-dark"> Ajouter des tâches </button>#}
+{#            {% endif %}#}
+{#        </div>#}
         <div class="row">
-            <div class="col-8">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>Titre</strong> : {{ projet.nom }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Description </strong> : {{ projet.description }}
-                    </li>
-                </ul>
+            <div class="col-md-12 mb-4">
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">{{ projet.nom }}</h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="kt-portlet__head-toolbar-wrapper">
+                                <div class="dropdown dropdown-inline">
+                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="flaticon-more-1"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
+                                        <ul class="kt-nav">
+                                            <li class="kt-nav__section kt-nav__section--first">
+                                                <span class="kt-nav__section-text">Actions</span>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-edit"></i>
+                                                    <span class="kt-nav__link-text">Modifier</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-check"></i>
+                                                    <span class="kt-nav__link-text">Completé</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#exampleModal">
+                                                    <i class="kt-nav__link-icon la la-user-md"></i>
+                                                    <span class="kt-nav__link-text">Ajouter les membres</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-brand btn-elevate btn-pill"
+                                    data-toggle="collapse"
+                                    href="#form-add-task"
+                                    aria-expanded="true"
+                                    aria-controls="form-add-task"
+                            >
+                                <i class="la la-plus"></i> Ajouter les tâches
+                            </button>
+                            <div class="multi-collapse collapse mt-4" id="form-add-task">
+                                <div class="col-8">
+                                    {{  form(form_task) }}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            {% for task in tasks %}
+                <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+                <!--begin::Portlet-->
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head kt-portlet__head--noborder">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">{{ task.nom }} </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="kt-portlet__head-toolbar-wrapper">
+                                <div class="dropdown dropdown-inline">
+                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="flaticon-more-1"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
+                                        <ul class="kt-nav">
+                                            <li class="kt-nav__section kt-nav__section--first">
+                                                <span class="kt-nav__section-text">Actions</span>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="/projet/edit/1" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-edit"></i>
+                                                    <span class="kt-nav__link-text">Modifier</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link btn-remove" data-agent-id="1">
+                                                    <i class="kt-nav__link-icon la la-trash"></i>
+                                                    <span class="kt-nav__link-text">Supprimer</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-portlet__body--fluid">
+                        <div class="kt-widget-13">
+                            <div class="kt-widget-13__body">
+                                <div class="kt-widget-13__desc">
+                                    {{ task.description }}
+                                </div>
+                            </div>
+                            <div class="kt-widget-13__foot">
+                                <div class="kt-widget-13__label">
+                                    <div class="">
+                                        {% if task.priorite == 0 %}
+                                            <span class="badge badge-success">Basse</span>
+                                        {% elseif task.priorite == 1 %}
+                                            <span class="badge badge-warning">Moyenne</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Elévé</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="pl-4">
+                                        {% if task.statut == 0 %}
+                                            <span class="badge badge-secondary">En cours</span>
+                                        {% else %}
+                                            <span class="badge badge-success">Completé</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="kt-widget-13__toolbar">
+                                    <a href="/projet/1" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Portlet-->	</div>
+            {% endfor %}
         </div>
-        <div class="mt-4">
-            <a href="/projets" class="btn btn-dark">Retour vers la liste des projets</a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <button class="btn btn-dark"> Ajouter des tâches </button>
-            {% endif %}
+
+        <div class="modal fade bd-example-modal-md" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Invites les membres</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method="post">
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     {% endif %}
