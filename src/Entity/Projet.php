@@ -33,9 +33,15 @@ class Projet
      */
     private $tasks;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="projet")
+     */
+    private $members;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,6 +98,37 @@ class Projet
             // set the owning side to null (unless already changed)
             if ($task->getProjet() === $this) {
                 $task->setProjet(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function addMember(User $member): self
+    {
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
+            $member->setProjet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMember(User $member): self
+    {
+        if ($this->members->contains($member)) {
+            $this->members->removeElement($member);
+            // set the owning side to null (unless already changed)
+            if ($member->getProjet() === $this) {
+                $member->setProjet(null);
             }
         }
 

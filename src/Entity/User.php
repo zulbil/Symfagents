@@ -83,6 +83,11 @@ class User implements UserInterface
      */
     private $tasks;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Projet", inversedBy="members")
+     */
+    private $projet;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -265,6 +270,18 @@ class User implements UserInterface
                 $task->setAgent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProjet(): ?Projet
+    {
+        return $this->projet;
+    }
+
+    public function setProjet(?Projet $projet): self
+    {
+        $this->projet = $projet;
 
         return $this;
     }
