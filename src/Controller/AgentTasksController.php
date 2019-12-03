@@ -96,4 +96,14 @@ class AgentTasksController extends AbstractController
 
         return $this->render('agent_tasks/task.html.twig', $data );
     }
+
+    /**
+     *@Route("/tasks/{user_id}", name="task_list")
+     */
+    public function show_all_tasks($user_id) {
+        $data = array();
+
+        $entityManager  = $this->getDoctrine()->getManager();
+        $task           = $entityManager->getRepository(AgentTasks::class)->find($user_id);
+    }
 }

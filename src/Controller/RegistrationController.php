@@ -129,8 +129,10 @@ class RegistrationController extends AbstractController
      */
     public function userProfile () {
         $user = $this->getUser();
+        $data['user'] = $user;
+        $data['page'] = "Mon Profil";
 
-        return $this->render('app/profile.html.twig', ['user' => $user ]);
+        return $this->render('app/profile.html.twig', $data );
     }
 
 

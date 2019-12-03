@@ -25,7 +25,7 @@ class AgentController extends AbstractController
 {
 
     /**
-     * @Route("/", name="list_agent")
+     * @Route("/agents", name="list_agent")
      */
     public function index()
     {
@@ -74,15 +74,14 @@ class AgentController extends AbstractController
             $user->setRoles(["ROLE_USER"]);
             $user->setFirstname($agent->getPrenom());
             $user->setLastname($agent->getNom());
-            $user->setAgent($agent);
 
-            // ... perform some action, such as saving the agent to the database
+            // ... perform some action, such as saving the user to the database
             // for example, if Agent is a Doctrine entity, save it!
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
-            $entityManager->persist($agent);
+            //$entityManager->persist($agent);
             $entityManager->flush();
-
+            // Send an email to the user
             $this->sendEmail($user, $plainPassword);
 
             return $this->redirectToRoute('list_agent');

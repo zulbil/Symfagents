@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ProjetController extends AbstractController
 {
     /**
-     * @Route("/projets", name="projets")
+     * @Route("/", name="projets")
      */
     public function index()
     {
