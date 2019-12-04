@@ -102,8 +102,9 @@ class ProjetController extends AbstractController
         $data['form_task']       = $form_task->createView();
         $data['projet']     = $projet;
         $data['tasks']      = $tasks;
-        $data['page']       = "Détails du projet #$id";
+        $data['page']       = $projet->getNom();
         $data['users']      = $this->getDoctrine()->getManager()->getRepository(User::class)->findAllNormalsUsers();
+        $data['members']    = $projet->getMembers();
 
         return $this->render("projet/one-projet.html.twig", $data);
     }
@@ -154,7 +155,8 @@ class ProjetController extends AbstractController
        $user        = $entityManager->getRepository(User::class)->find($user_id);
        $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
 
-       $user->setProjet($projet);
+       $user->addProjet($projet);
+       $projet->addMember($user);
 
        $entityManager->persist($projet);
        $entityManager->persist($user);

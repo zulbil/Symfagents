@@ -34,7 +34,7 @@ class Projet
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="projet")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="projets")
      */
     private $members;
 
@@ -116,7 +116,6 @@ class Projet
     {
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
-            $member->setProjet($this);
         }
 
         return $this;
@@ -126,10 +125,6 @@ class Projet
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
-            // set the owning side to null (unless already changed)
-            if ($member->getProjet() === $this) {
-                $member->setProjet(null);
-            }
         }
 
         return $this;

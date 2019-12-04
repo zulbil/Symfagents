@@ -84,13 +84,14 @@ class User implements UserInterface
     private $tasks;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Projet", inversedBy="members")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Projet", mappedBy="members")
      */
-    private $projet;
+    private $projets;
 
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->projets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,14 +275,30 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getProjet(): ?Projet
+    /**
+     * @return Collection|Projet[]
+     */
+    public function getProjets(): Collection
     {
-        return $this->projet;
+        return $this->projets;
     }
 
-    public function setProjet(?Projet $projet): self
+    public function addProjet(Projet $projet): self
     {
-        $this->projet = $projet;
+        if (!$this->projets->contains($projet)) {
+            $this->projets[] = $projet;
+            $projet->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjet(Projet $projet): self
+    {
+        if ($this->projets->contains($projet)) {
+            $this->projets->removeElement($projet);
+            $projet->removeMember($this);
+        }
 
         return $this;
     }

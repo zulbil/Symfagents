@@ -6,6 +6,7 @@ use App\Entity\AgentTasks;
 use App\Entity\Projet;
 use App\Entity\User;
 use App\Form\AgentTasksType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -121,6 +122,7 @@ class AgentTasksController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/invite/task/members", name="invite_user_task")
@@ -169,6 +171,7 @@ class AgentTasksController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/remove/task/{task_id}/member/{user_id}", name="remove_user_task")

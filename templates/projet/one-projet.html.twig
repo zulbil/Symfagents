@@ -4,161 +4,229 @@
 
 {% block body %}
     {% if projet %}
-{#        <h5 class="mt-4 mb-4"> {{ projet.nom }} </h5>#}
-{#        <div class="row">#}
-{#            <div class="col-8">#}
-{#                <ul class="list-group">#}
-{#                    <li class="list-group-item">#}
-{#                        <strong>Titre</strong> : {{ projet.nom }}#}
-{#                    </li>#}
-{#                    <li class="list-group-item">#}
-{#                        <strong>Description </strong> : {{ projet.description }}#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="mt-4">#}
-{#            <a href="/projets" class="btn btn-dark">Retour vers la liste des projets</a>#}
-{#            {% if is_granted('ROLE_ADMIN') %}#}
-{#                <button class="btn btn-dark"> Ajouter des tâches </button>#}
-{#            {% endif %}#}
-{#        </div>#}
         <div class="row">
             <div class="col-md-12 mb-4">
-                <div class="kt-portlet">
+                <div class="kt-portlet kt-portlet--tabs">
                     <div class="kt-portlet__head">
-                        <div class="kt-portlet__head-label">
-                            <h3 class="kt-portlet__head-title">{{ projet.nom }}</h3>
-                        </div>
                         <div class="kt-portlet__head-toolbar">
-                            <div class="kt-portlet__head-toolbar-wrapper">
-                                <div class="dropdown dropdown-inline">
-                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="flaticon-more-1"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
-                                        <ul class="kt-nav">
-                                            <li class="kt-nav__section kt-nav__section--first">
-                                                <span class="kt-nav__section-text">Actions</span>
-                                            </li>
-                                            <li class="kt-nav__item">
-                                                <a href="#" class="kt-nav__link">
-                                                    <i class="kt-nav__link-icon la la-edit"></i>
-                                                    <span class="kt-nav__link-text">Modifier</span>
-                                                </a>
-                                            </li>
-                                            <li class="kt-nav__item">
-                                                <a href="#" class="kt-nav__link">
-                                                    <i class="kt-nav__link-icon la la-check"></i>
-                                                    <span class="kt-nav__link-text">Completé</span>
-                                                </a>
-                                            </li>
-                                            <li class="kt-nav__item">
-                                                <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#exampleModal">
-                                                    <i class="kt-nav__link-icon la la-user-md"></i>
-                                                    <span class="kt-nav__link-text">Ajouter les membres</span>
-                                                </a>
-                                            </li>
-                                        </ul>
+                            <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-brand nav-tabs-line-2x nav-tabs-line-right nav-tabs-bold" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#kt_portlet_base_demo_3_1_tab_content" role="tab" aria-selected="true">
+                                        <i class="flaticon2-heart-rate-monitor" aria-hidden="true"></i>Tâches
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#kt_portlet_base_demo_3_2_tab_content" role="tab" aria-selected="false">
+                                        <i class="flaticon2-user-1" aria-hidden="true"></i>Les Membres
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Actions</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" data-toggle="tab" href="#kt_tabs_7_3">
+                                            <i class="kt-nav__link-icon la la-edit"></i>
+                                            <span class="kt-nav__link-text">Modifier</span>
+                                        </a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#kt_tabs_7_1">
+                                            <i class="kt-nav__link-icon la la-check"></i>
+                                            <span class="kt-nav__link-text">Completé</span>
+                                        </a>
                                     </div>
-                                </div>
-                            </div>
+                                </li>
+                            </ul>
                         </div>
+                                            {#                        <div class="kt-portlet__head-toolbar">#}
+{#                            <div class="kt-portlet__head-toolbar-wrapper">#}
+{#                                <div class="dropdown dropdown-inline">#}
+{#                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                                        <i class="flaticon-more-1"></i>#}
+{#                                    </button>#}
+{#                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">#}
+{#                                        <ul class="kt-nav">#}
+{#                                            <li class="kt-nav__section kt-nav__section--first">#}
+{#                                                <span class="kt-nav__section-text">Actions</span>#}
+{#                                            </li>#}
+{#                                            <li class="kt-nav__item">#}
+{#                                                <a href="#" class="kt-nav__link">#}
+{#                                                    <i class="kt-nav__link-icon la la-edit"></i>#}
+{#                                                    <span class="kt-nav__link-text">Modifier</span>#}
+{#                                                </a>#}
+{#                                            </li>#}
+{#                                            <li class="kt-nav__item">#}
+{#                                                <a href="#" class="kt-nav__link">#}
+{#                                                    <i class="kt-nav__link-icon la la-check"></i>#}
+{#                                                    <span class="kt-nav__link-text">Completé</span>#}
+{#                                                </a>#}
+{#                                            </li>#}
+{#                                            <li class="kt-nav__item">#}
+{#                                                <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#exampleModal1">#}
+{#                                                    <i class="kt-nav__link-icon la la-user-md"></i>#}
+{#                                                    <span class="kt-nav__link-text">Voir la liste des membres </span>#}
+{#                                                </a>#}
+{#                                            </li>#}
+{#                                            <li class="kt-nav__item">#}
+{#                                                <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#exampleModal">#}
+{#                                                    <i class="kt-nav__link-icon la la-user-md"></i>#}
+{#                                                    <span class="kt-nav__link-text">Ajouter les membres</span>#}
+{#                                                </a>#}
+{#                                            </li>#}
+{#                                        </ul>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
                     </div>
                     <div class="kt-portlet__body">
-                        <div>
-                            <button
-                                    type="button"
-                                    class="btn btn-outline-brand btn-elevate btn-pill"
-                                    data-toggle="collapse"
-                                    href="#form-add-task"
-                                    aria-expanded="true"
-                                    aria-controls="form-add-task"
-                            >
-                                <i class="la la-plus"></i> Ajouter les tâches
-                            </button>
-                            <div class="multi-collapse collapse mt-4" id="form-add-task">
-                                <div class="col-8">
-                                    {{  form(form_task) }}
-                                </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="kt_portlet_base_demo_3_1_tab_content" role="tabpanel">
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-brand btn-elevate btn-pill"
+                                        data-toggle="collapse"
+                                        href="#form-add-task"
+                                        aria-expanded="true"
+                                        aria-controls="form-add-task"
+                                >
+                                    <i class="la la-plus"></i> Ajouter les tâches
+                                </button>
+                                <div class="multi-collapse collapse mt-4" id="form-add-task">
+                                    <div class="col-lg-8">
+                                        {{  form(form_task) }}
+                                    </div>
 
+                                </div>
+                                <div class="row mt-4">
+                                    {% for task in tasks %}
+                                        <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+                                            <!--begin::Portlet-->
+                                            <div class="kt-portlet kt-portlet--height-fluid">
+                                                <div class="kt-portlet__head kt-portlet__head--noborder">
+                                                    <div class="kt-portlet__head-label">
+                                                        <h3 class="kt-portlet__head-title">{{ task.nom }} </h3>
+                                                    </div>
+                                                    <div class="kt-portlet__head-toolbar">
+                                                        <div class="kt-portlet__head-toolbar-wrapper">
+                                                            <div class="dropdown dropdown-inline">
+                                                                <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="flaticon-more-1"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
+                                                                    <ul class="kt-nav">
+                                                                        <li class="kt-nav__section kt-nav__section--first">
+                                                                            <span class="kt-nav__section-text">Actions</span>
+                                                                        </li>
+                                                                        <li class="kt-nav__item">
+                                                                            <a href="/projet/edit/1" class="kt-nav__link">
+                                                                                <i class="kt-nav__link-icon la la-edit"></i>
+                                                                                <span class="kt-nav__link-text">Modifier</span>
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="kt-nav__item">
+                                                                            <a href="#" class="kt-nav__link btn-remove" data-agent-id="1">
+                                                                                <i class="kt-nav__link-icon la la-trash"></i>
+                                                                                <span class="kt-nav__link-text">Supprimer</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="kt-portlet__body kt-portlet__body--fluid">
+                                                    <div class="kt-widget-13">
+                                                        <div class="kt-widget-13__body">
+                                                            <div class="kt-widget-13__desc">
+                                                                {{ task.description }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="kt-widget-13__foot">
+                                                            <div class="kt-widget-13__label">
+                                                                <div class="">
+                                                                    {% if task.priorite == 0 %}
+                                                                        <span class="badge badge-success">Basse</span>
+                                                                    {% elseif task.priorite == 1 %}
+                                                                        <span class="badge badge-warning">Moyenne</span>
+                                                                    {% else %}
+                                                                        <span class="badge badge-danger">Elévé</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="pl-4">
+                                                                    {% if task.statut == 0 %}
+                                                                        <span class="badge badge-secondary">En cours</span>
+                                                                    {% else %}
+                                                                        <span class="badge badge-success">Completé</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                            <div class="kt-widget-13__toolbar">
+                                                                <a href="/task/{{ task.id }}" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end::Portlet-->	</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="kt_portlet_base_demo_3_2_tab_content" role="tabpanel">
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-brand btn-elevate btn-pill mb-4"
+                                        data-toggle="collapse"
+                                        href="#form-add-task"
+                                        aria-expanded="true"
+                                        aria-controls="form-add-task"
+                                >
+                                    <i class="la la-plus"></i> Ajouter un utilisateur
+                                </button>
+                                {% if members %}
+                                    <table class="table" id="table_list_agent">
+                                        <thead class="">
+                                        <tr>
+                                            <th scope="col">Identifiant</th>
+                                            <th scope="col">Nom complet de l'agent</th>
+                                            <th scope="col">Salaire</th>
+                                            <th scope="col">Fonction</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for member in members %}
+                                            <tr>
+                                                <th scope="row">{{ member.id }}</th>
+                                                <td>{{ member.nom }} {{ member.postnom }} {{ member.prenom }}</td>
+                                                <td> {{ member.salaire }}  </td>
+                                                <td> {{ member.fonction }} </td>
+                                                <td>
+                                                    {% if is_granted('ROLE_ADMIN') %}
+                                                        <button type="button" data-agent-id="{{ member.id }}" class="btn btn-danger btn-elevate btn-circle btn-icon">
+                                                            <i class="flaticon2-trash"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <div class="alert alert-secondary fade show" role="alert">
+                                        <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+                                        <div class="alert-text">Aucun utilisateur n'a été ajouté</div>
+                                        <div class="alert-close">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true"><i class="la la-close"></i></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {% for task in tasks %}
-                <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
-                <!--begin::Portlet-->
-                <div class="kt-portlet kt-portlet--height-fluid">
-                    <div class="kt-portlet__head kt-portlet__head--noborder">
-                        <div class="kt-portlet__head-label">
-                            <h3 class="kt-portlet__head-title">{{ task.nom }} </h3>
-                        </div>
-                        <div class="kt-portlet__head-toolbar">
-                            <div class="kt-portlet__head-toolbar-wrapper">
-                                <div class="dropdown dropdown-inline">
-                                    <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="flaticon-more-1"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
-                                        <ul class="kt-nav">
-                                            <li class="kt-nav__section kt-nav__section--first">
-                                                <span class="kt-nav__section-text">Actions</span>
-                                            </li>
-                                            <li class="kt-nav__item">
-                                                <a href="/projet/edit/1" class="kt-nav__link">
-                                                    <i class="kt-nav__link-icon la la-edit"></i>
-                                                    <span class="kt-nav__link-text">Modifier</span>
-                                                </a>
-                                            </li>
-                                            <li class="kt-nav__item">
-                                                <a href="#" class="kt-nav__link btn-remove" data-agent-id="1">
-                                                    <i class="kt-nav__link-icon la la-trash"></i>
-                                                    <span class="kt-nav__link-text">Supprimer</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="kt-portlet__body kt-portlet__body--fluid">
-                        <div class="kt-widget-13">
-                            <div class="kt-widget-13__body">
-                                <div class="kt-widget-13__desc">
-                                    {{ task.description }}
-                                </div>
-                            </div>
-                            <div class="kt-widget-13__foot">
-                                <div class="kt-widget-13__label">
-                                    <div class="">
-                                        {% if task.priorite == 0 %}
-                                            <span class="badge badge-success">Basse</span>
-                                        {% elseif task.priorite == 1 %}
-                                            <span class="badge badge-warning">Moyenne</span>
-                                        {% else %}
-                                            <span class="badge badge-danger">Elévé</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="pl-4">
-                                        {% if task.statut == 0 %}
-                                            <span class="badge badge-secondary">En cours</span>
-                                        {% else %}
-                                            <span class="badge badge-success">Completé</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="kt-widget-13__toolbar">
-                                    <a href="/task/{{ task.id }}" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--end::Portlet-->	</div>
-            {% endfor %}
+
         </div>
 
         <div class="modal fade bd-example-modal-md" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
