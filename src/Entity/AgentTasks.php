@@ -52,14 +52,14 @@ class AgentTasks
     private $agent;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $observation;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Projet", inversedBy="tasks")
      */
     private $projet;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $observation;
 
     public function getId(): ?int
     {
@@ -149,18 +149,7 @@ class AgentTasks
 
         return $this;
     }
-
-    public function getObservation(): ?string
-    {
-        return $this->observation;
-    }
-
-    public function setObservation(?string $observation): self
-    {
-        $this->observation = $observation;
-
-        return $this;
-    }
+    
 
     public function getProjet(): ?Projet
     {
@@ -170,6 +159,18 @@ class AgentTasks
     public function setProjet(?Projet $projet): self
     {
         $this->projet = $projet;
+
+        return $this;
+    }
+
+    public function getObservation(): ?string
+    {
+        return $this->observation;
+    }
+
+    public function setObservation(?string $observation): self
+    {
+        $this->observation = $observation;
 
         return $this;
     }

@@ -3,51 +3,162 @@
 {% block title %} {{ page }} {% endblock %}
 
 {% block body %}
-<h2 class="mt-4 mb-4"> {{ page }} </h2>
+{#<h2 class="mt-4 mb-4"> {{ page }} </h2>#}
 {% if task %}
     <div class="row">
-    <div class="col-md-10">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <b>Titre de la tâche</b> : {{ task.nom }}
-            </li>
-            <li class="list-group-item">
-                <b>Description de la tâche </b> : {{ task.description }}
-            </li>
-            <li class="list-group-item">
-                <b>Priorité  </b> :
-                {% if task.priorite == 0 %}
-                    <span class="badge badge-success"> Basse </span>
-                {% elseif task.priorite == 1 %}
-                    <span class="badge badge-warning"> Moyenne </span>
-                {% else %}
-                    <span class="badge badge-danger"> Elévé </span>
-                {% endif %}
-            </li>
-            <li class="list-group-item">
-                <b>Statut  </b> :
-                {% if task.statut == 0 %}
-                    <span class="badge badge-secondary"> En cours... </span>
-                {% elseif task.statut == 1 %}
-                    <span class="badge badge-success"> Terminé </span>
-                {% endif %}
-            </li>
-            <li class="list-group-item">
-                <b>Date de début: </b> {{ task.date_debut | date("D M Y") }}
-            </li>
-            <li class="list-group-item">
-                <b>Date de fin: </b> {{ task.date_fin | date("D M Y") }}
-            </li>
-        </ul>
-    </div>
-</div>
+        <div class="col-md-12 mb-4">
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">{{ page }}</h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <div class="kt-portlet__head-toolbar-wrapper">
+                            <div class="dropdown dropdown-inline">
+                                <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="flaticon-more-1"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(31px, 32px, 0px);">
+                                    <ul class="kt-nav">
+                                        <li class="kt-nav__section kt-nav__section--first">
+                                            <span class="kt-nav__section-text">Actions</span>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="/task/edit/{{ task.id }}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-edit"></i>
+                                                <span class="kt-nav__link-text">Modifier</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="#" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-check"></i>
+                                                <span class="kt-nav__link-text">Completé</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#kt_select2_modal">
+                                                <i class="kt-nav__link-icon la la-user-md"></i>
+                                                <span class="kt-nav__link-text">Ajouter les membres</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+                    <div class="row">
+                        <div class="col-md-8 pl-0">
+                            <p class="mb-5">
+                                <a class="pr-3" href="/projet/{{ projet.id }}">{{ projet.nom }}</a>   | <b class="pl-3">Tâche #{{ task.id }}</b>
+                            </p>
+                            <p> {{ task.description }}</p>
+                            <div>
+                                {% if agent %}
+                                    <form action="/add/task/observation" method="post">
+                                        <div class="form-group">
+                                            <textarea name="observation" id="observation" cols="30" rows="10" class="form-control textarea-base"> {{ task.observation }}</textarea>
+                                        </div>
+                                        <input type="hidden" name="author" value="{{ app.user.id }}">
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        {% if task.observation %}
+                                            <input type="hidden" name="edit" value="edit">
+                                        {% endif %}
+                                        <button type="submit" class="btn btn-primary btn-pill">Commenter</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 pl-5">
+                            <div class="">
+                                <b>Temps d'estimation </b>
+                                <p> 8 : 00 </p>
+                            </div>
+                            <div class="">
+                                <b>Priorité </b>
+                                <p>
+                                    {% if task.priorite == 0 %}
+                                        <span class="badge badge-success">Basse</span>
+                                    {% elseif task.priorite == 1 %}
+                                        <span class="badge badge-warning">Moyenne</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Elévé</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="">
+                                <b>Statut </b>
+                                <p>
+                                    {% if task.statut == 0 %}
+                                        <span class="badge badge-secondary">En cours</span>
+                                    {% else %}
+                                        <span class="badge badge-success">Completé</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% if users %}
+                                <div class="assignee">
+                                    <b>Assigné à : </b>
+                                    <div class="kt-list">
+                                            <div class="kt-list__item">
+                                                <span class="pr-4"> {{ users.prenom }} {{ users.nom }} </span>
+                                                <button
+                                                        type="button"
+                                                        id="remove-user-btn"
+                                                        class="btn btn-danger btn-elevate btn-circle btn-icon"
+                                                        data-task-id="{{ task.id }}"
+                                                        data-user-id="{{ users.id }}"
+                                                >
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-md" id="kt_select2_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Invites les membres</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/invite/task/members" method="post" class="members-form kt-form kt-form--fit kt-form--label-right">
+                        <div class="form-group">
+                            <select name="members" id="members" class="form-control">
+                                {% for user in agents %}
+                                    <option value="{{ user.id }}">{{ user.prenom }} {{ user.nom }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <input type="hidden" name="projet_id" value="{{ projet.id }}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary btn-submit-members-task" data-dismiss="modal">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="mt-4">
-        <a href="/agent/{{ agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>
+{#        <a href="/agent/{{ agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>#}
         {% if is_granted('ROLE_ADMIN') %}
-            <a class="btn btn-primary add-agent" href="/agent/{{ agent_id }}/task/edit/{{ task.id }}">
-                Modifier cette tâche
-            </a>
+{#            <a class="btn btn-primary add-agent" href="/agent/{{ agent_id }}/task/edit/{{ task.id }}">#}
+{#                Modifier cette tâche#}
+{#            </a>#}
         {% endif %}
     </div>
 {% endif %}

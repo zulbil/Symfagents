@@ -147,21 +147,21 @@ class ProjetController extends AbstractController
      */
     public function addMemberToProject(Request $request) {
         $entityManager  = $this->getDoctrine()->getManager();
-        //if($request->isMethod("POST")) {
-           $user_id     = (int)$request->request->get("user_id");
-           $projet_id   = (int)$request->request->get('projet_id');
 
-           $user        = $entityManager->getRepository(User::class)->find($user_id);
-           $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
+       $user_id     = (int)$request->request->get("user_id");
+       $projet_id   = (int)$request->request->get('projet_id');
 
-           $user->setProjet($projet);
+       $user        = $entityManager->getRepository(User::class)->find($user_id);
+       $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
 
-           $entityManager->persist($projet);
-           $entityManager->persist($user);
+       $user->setProjet($projet);
 
-           $entityManager->flush();
+       $entityManager->persist($projet);
+       $entityManager->persist($user);
 
-           return $this->json([ "message" => "success" ]);
+       $entityManager->flush();
+
+       return $this->json([ "message" => "L'utilisateur a été correctement ajouté au projet" ]);
 
     }
 }

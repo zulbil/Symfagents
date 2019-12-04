@@ -22,3 +22,14 @@
 .select2-container {
     width: 100% !important;
 }
+.textarea-base {
+    border: 0 !important;
+    background-color: #f2f3f8 !important;
+    resize: none;
+}
+.assignee .kt-list__item button {
+    opacity: 0;
+    transition: all 0.1s ease;
+}
+.assignee .kt-list__item { cursor: pointer; }
+.assignee .kt-list__item:hover button { opacity: 1; }
