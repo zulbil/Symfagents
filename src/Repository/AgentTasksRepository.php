@@ -47,4 +47,34 @@ class AgentTasksRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @param $projet_id
+     * @param $user_id
+     * @return array
+     */
+    public function findTasksRelatedToUserPerProjet($projet_id, $user_id) : array
+    {
+        return $this->createQueryBuilder('a')
+                    ->where('a.projet = :projet_id')
+                    ->setParameter('projet_id', $projet_id)
+                    ->orderBy('a.priorite', 'DESC')
+                    ->andWhere('a.agent = :agent_id')
+                    ->setParameter('agent_id', $user_id)
+                    ->getQuery()
+                    ->execute();
+    }
+
+    /**
+     * @param $user_id
+     * @return array
+     */
+    public function findTasksRelatedToUser ( $user_id ) : array
+    {
+        return $this->createQueryBuilder('a')
+                    ->where('a.agent = :agent_id')
+                    ->setParameter('agent_id', $user_id)
+                    ->getQuery()
+                    ->execute();
+    }
 }

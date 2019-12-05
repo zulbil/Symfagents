@@ -1,0 +1,92 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    {% if projet %}
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="kt-portlet kt-portlet--tabs">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-toolbar">
+                            <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-brand nav-tabs-line-2x nav-tabs-line-right nav-tabs-bold" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#kt_portlet_base_demo_3_1_tab_content" role="tab" aria-selected="true">
+                                        <i class="flaticon2-heart-rate-monitor" aria-hidden="true"></i>Tâches
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="kt_portlet_base_demo_3_1_tab_content" role="tabpanel">
+                                <div class="row mt-4">
+                                    {% if tasks %}
+                                        {% for task in tasks %}
+                                        <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+                                            <!--begin::Portlet-->
+                                            <div class="kt-portlet kt-portlet--height-fluid">
+                                                <div class="kt-portlet__head kt-portlet__head--noborder">
+                                                    <div class="kt-portlet__head-label">
+                                                        <h3 class="kt-portlet__head-title">{{ task.nom }} </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="kt-portlet__body kt-portlet__body--fluid">
+                                                    <div class="kt-widget-13">
+                                                        <div class="kt-widget-13__body">
+                                                            <div class="kt-widget-13__desc">
+                                                                {{ task.description }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="kt-widget-13__foot">
+                                                            <div class="kt-widget-13__label">
+                                                                <div class="">
+                                                                    {% if task.priorite == 0 %}
+                                                                        <span class="badge badge-success">Basse</span>
+                                                                    {% elseif task.priorite == 1 %}
+                                                                        <span class="badge badge-warning">Moyenne</span>
+                                                                    {% else %}
+                                                                        <span class="badge badge-danger">Elévé</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="pl-4">
+                                                                    {% if task.statut == 0 %}
+                                                                        <span class="badge badge-secondary">En cours</span>
+                                                                    {% else %}
+                                                                        <span class="badge badge-success">Completé</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                            <div class="kt-widget-13__toolbar">
+                                                                <a href="/task/{{ task.id }}" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end::Portlet-->	</div>
+                                    {% endfor %}
+                                    {% else %}
+                                        <div class="alert alert-light alert-elevate fade show" role="alert">
+                                            <div class="alert-icon"><i class="flaticon-warning"></i></div>
+                                            <div class="alert-text">Aucune tâche ne vous a été attribuée</div>
+                                            <div class="alert-close">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true"><i class="la la-close"></i></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    {% endif %}
+{% endblock %}
+

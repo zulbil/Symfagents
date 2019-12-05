@@ -136,12 +136,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         */
         $hasAccess = $this->security->isGranted('ROLE_ADMIN');
         $user = $this->security->getUser();
-        $user_id = $user->getId();
 
         if($hasAccess) {
             return new RedirectResponse($this->urlGenerator->generate('projets'));
         }
-        return new RedirectResponse($this->urlGenerator->generate('task_list', ['user_id' => $user_id]));
+        return new RedirectResponse($this->urlGenerator->generate('project_user'));
     }
 
     protected function getLoginUrl()

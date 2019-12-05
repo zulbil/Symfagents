@@ -17,22 +17,34 @@
         <div id="kt_aside_menu" class="kt-aside-menu kt-scroll ps ps--active-y" data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500" style="height: 348px; overflow: hidden;">
 
             <ul class="kt-menu__nav ">
-                <li class="kt-menu__item " aria-haspopup="true">
-                    <a href="/" class="kt-menu__link ">
-                        <i class="kt-menu__link-icon flaticon-app"></i><span class="kt-menu__link-text">Les Projets</span>
-                    </a>
-                </li>
-                <li class="kt-menu__item " aria-haspopup="true">
-                    <a href="/agents" class="kt-menu__link ">
-                        <i class="kt-menu__link-icon flaticon-users"></i><span class="kt-menu__link-text">Les Agents</span>
-                    </a>
-                </li>
-                <li class="kt-menu__item " aria-haspopup="true">
-                    <a href="#" class="kt-menu__link ">
-                        <i class="kt-menu__link-icon flaticon2-gear"></i><span class="kt-menu__link-text">Mes Tâches</span>
-                    </a>
-                </li>
-
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a href="/" class="kt-menu__link ">
+                            <i class="kt-menu__link-icon flaticon-app"></i><span class="kt-menu__link-text">Les Projets</span>
+                        </a>
+                    </li>
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a href="/agents" class="kt-menu__link ">
+                            <i class="kt-menu__link-icon flaticon-users"></i><span class="kt-menu__link-text">Les Agents</span>
+                        </a>
+                    </li>
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a href="#" class="kt-menu__link ">
+                            <i class="kt-menu__link-icon flaticon2-gear"></i><span class="kt-menu__link-text">Mes Tâches</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a href="/user/projets" class="kt-menu__link ">
+                            <i class="kt-menu__link-icon flaticon-app"></i><span class="kt-menu__link-text">Mes Projets</span>
+                        </a>
+                    </li>
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a href="/user/tasks" class="kt-menu__link ">
+                            <i class="kt-menu__link-icon flaticon2-gear"></i><span class="kt-menu__link-text">Mes Tâches</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

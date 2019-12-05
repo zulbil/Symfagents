@@ -23,22 +23,24 @@
                                         <li class="kt-nav__section kt-nav__section--first">
                                             <span class="kt-nav__section-text">Actions</span>
                                         </li>
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <li class="kt-nav__item">
+                                                <a href="/task/edit/{{ task.id }}" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-edit"></i>
+                                                    <span class="kt-nav__link-text">Modifier</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-nav__item">
+                                                <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#kt_select2_modal">
+                                                    <i class="kt-nav__link-icon la la-user-md"></i>
+                                                    <span class="kt-nav__link-text">Ajouter les membres</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
                                         <li class="kt-nav__item">
-                                            <a href="/task/edit/{{ task.id }}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-edit"></i>
-                                                <span class="kt-nav__link-text">Modifier</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
+                                            <a href="#" class="kt-nav__link btn-complete" data-task-id="{{ task.id }}">
                                                 <i class="kt-nav__link-icon la la-check"></i>
                                                 <span class="kt-nav__link-text">Completé</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link" data-toggle="modal" data-target="#kt_select2_modal">
-                                                <i class="kt-nav__link-icon la la-user-md"></i>
-                                                <span class="kt-nav__link-text">Ajouter les membres</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -56,17 +58,24 @@
                             <p> {{ task.description }}</p>
                             <div>
                                 {% if agent %}
-                                    <form action="/add/task/observation" method="post">
-                                        <div class="form-group">
-                                            <textarea name="observation" id="observation" cols="30" rows="10" class="form-control textarea-base"> {{ task.observation }}</textarea>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <b>Observation </b>
+                                        <div class="task-observation">
+                                            {{ task.observation }}
                                         </div>
-                                        <input type="hidden" name="author" value="{{ app.user.id }}">
-                                        <input type="hidden" name="task_id" value="{{ task.id }}">
-                                        {% if task.observation %}
-                                            <input type="hidden" name="edit" value="edit">
-                                        {% endif %}
-                                        <button type="submit" class="btn btn-primary btn-pill">Commenter</button>
-                                    </form>
+                                    {% else %}
+                                        <form action="/add/task/observation" method="post">
+                                            <div class="form-group">
+                                                <textarea name="observation" id="observation" cols="30" rows="10" class="form-control textarea-base"> {{ task.observation }}</textarea>
+                                            </div>
+                                            <input type="hidden" name="author" value="{{ app.user.id }}">
+                                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                                            {% if task.observation %}
+                                                <input type="hidden" name="edit" value="edit">
+                                            {% endif %}
+                                            <button type="submit" class="btn btn-primary btn-pill">Commenter</button>
+                                        </form>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -103,15 +112,17 @@
                                     <div class="kt-list">
                                             <div class="kt-list__item">
                                                 <span class="pr-4"> {{ users.prenom }} {{ users.nom }} </span>
-                                                <button
-                                                        type="button"
-                                                        id="remove-user-btn"
-                                                        class="btn btn-danger btn-elevate btn-circle btn-icon"
-                                                        data-task-id="{{ task.id }}"
-                                                        data-user-id="{{ users.id }}"
-                                                >
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                    <button
+                                                            type="button"
+                                                            id="remove-user-btn"
+                                                            class="btn btn-danger btn-elevate btn-circle btn-icon"
+                                                            data-task-id="{{ task.id }}"
+                                                            data-user-id="{{ users.id }}"
+                                                    >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
                                             </div>
                                     </div>
                                 </div>
@@ -152,14 +163,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="mt-4">
-{#        <a href="/agent/{{ agent_id }}" class="btn btn-dark">Retour vers la liste des tâches </a>#}
-        {% if is_granted('ROLE_ADMIN') %}
-{#            <a class="btn btn-primary add-agent" href="/agent/{{ agent_id }}/task/edit/{{ task.id }}">#}
-{#                Modifier cette tâche#}
-{#            </a>#}
-        {% endif %}
     </div>
 {% endif %}
 {% endblock %}

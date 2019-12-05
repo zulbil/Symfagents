@@ -6,6 +6,8 @@ use App\Entity\AgentTasks;
 use App\Entity\Projet;
 use App\Entity\User;
 use App\Form\AgentTasksType;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,11 +15,20 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class AgentTasksController extends AbstractController
 {
+    private $security;
+    private $entityManager;
+
+    public function __construct(Security $security, EntityManagerInterface $entityManager ) {
+        $this->security         = $security;
+        $this->entityManager    = $entityManager;
+    }
     /**
      * @Route("/agent/tasks", name="agent_tasks")
+     * @return Response
      */
     public function index()
     {
@@ -28,13 +39,15 @@ class AgentTasksController extends AbstractController
 
     /**
      * @Route("/task/edit/{task_id}", name="edit_agent_task")
+     * @param $task_id
+     * @param Request $request
+     * @return Response
      */
     public function editTask( $task_id, Request $request)
     {
         $data = array();
 
-        $entityManager  = $this->getDoctrine()->getManager();
-        $task           = $entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $task           = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
 
         $editForm       = $this->createForm(AgentTasksType::class, $task)
                             ->add('statut', ChoiceType::class, [
@@ -66,27 +79,31 @@ class AgentTasksController extends AbstractController
     }
 
     /**
-     *@Route("/remove/task/{task_id}", name="remove_task")
+     * @Route("/remove/task/{task_id}", name="remove_task")
+     * @param  $task_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function removeTask($task_id) {
         // Remove if only admin
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $task = $entityManager->getRepository(AgentTasks::class)->find($task_id);
-        $entityManager->remove($task);
-        $entityManager->flush();
+        $task = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
 
         return $this->json(['deleted' => true ]);
 
     }
 
     /**
-     *@Route("/task/{task_id}", name="show_task")
+     * @Route("/task/{task_id}", name="show_task")
+     * @param  $task_id
+     * @return Response
      */
     public function showTask($task_id) {
-        $entityManager  = $this->getDoctrine()->getManager();
-        $task          = $entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $task          = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
 
         if (!$task) {
             throw $this->createNotFoundException(
@@ -105,39 +122,29 @@ class AgentTasksController extends AbstractController
         $data['users']      = $task->getAgent();
 
         $data['agent']      = $task->getAgent();
-        $data['agents']      = $this->getDoctrine()->getManager()->getRepository(User::class)->findAllNormalsUsers();
+        $data['agents']      = $this->entityManager->getRepository(User::class)->findAllNormalsUsers();
         //$data['agent']   = isset($data['agent_id']) ? $data['agent_id'] : null ;
 
         return $this->render('agent_tasks/task.html.twig', $data );
     }
 
     /**
-     *@Route("/tasks/{user_id}", name="task_list")
-     */
-    public function show_all_tasks($user_id) {
-        $data = array();
-        $data['page'] = "Mes tâches";
-        $entityManager  = $this->getDoctrine()->getManager();
-        $task           = $entityManager->getRepository(AgentTasks::class)->find($user_id);
-
-        return $this->render('agent/my_tasks.html.twig', $data);
-    }
-
-    /**
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      * @Route("/invite/task/members", name="invite_user_task")
+     * This function is used to add a user on a task
      */
     public function addMemberToTask(Request $request) {
-        $entityManager  = $this->getDoctrine()->getManager();
 
         $user_id     = (int)$request->request->get("user_id");
         $projet_id   = (int)$request->request->get('projet_id');
         $task_id     = (int)$request->request->get('task_id');
 
-        $user        = $entityManager->getRepository(User::class)->find($user_id);
-        $projet      =  $entityManager->getRepository(Projet::class)->find($projet_id);
+        $user        = $this->entityManager->getRepository(User::class)->find($user_id);
+        $projet      =  $this->entityManager->getRepository(Projet::class)->find($projet_id);
 
         /**
          * Prevent to add user on a specific task without adding him to project that include this task
@@ -149,7 +156,7 @@ class AgentTasksController extends AbstractController
             ]);
         }
 
-        $task      = $entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $task      = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
 
         /**
          * Check if a task has already an assignee on it
@@ -164,9 +171,9 @@ class AgentTasksController extends AbstractController
         }
 
         $task->setAgent($user);
-        $entityManager->persist($user);
+        $this->entityManager->persist($user);
 
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         return $this->json([
             "message" => "L'utilisateur a été invité avec succès",
@@ -177,23 +184,25 @@ class AgentTasksController extends AbstractController
 
     /**
      * @IsGranted("ROLE_ADMIN")
+     * @param $task_id
+     * @param $user_id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      * @Route("/remove/task/{task_id}/member/{user_id}", name="remove_user_task")
      */
     public function removeUseronTask($task_id, $user_id, Request $request) {
 
-        $entityManager  = $this->getDoctrine()->getManager();
-
-        $user        = $entityManager->getRepository(User::class)->find($user_id);
-        $task        = $entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $user        = $this->entityManager->getRepository(User::class)->find($user_id);
+        $task        = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
 
         $user->removeTask($task);
 
-        $entityManager->persist($user);
-        $entityManager->persist($task);
+        $this->entityManager->persist($user);
+        $this->entityManager->persist($task);
 
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         return $this->json([
             "message" => "L'utilisateur a été retiré avec succès",
@@ -204,22 +213,42 @@ class AgentTasksController extends AbstractController
     /**
      * @param Request $request
      * @return Response $response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      * @Route("/add/task/observation", name="add_observation")
      */
     public function addObservation (Request $request) {
-        $entityManager = $this->getDoctrine()->getManager();
 
         $task_id        = (int)$request->request->get('task_id');
         $observation    = $request->request->get('observation');
 
-        $task     = $entityManager->getRepository(AgentTasks::class)->find($task_id);
+        $task     = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
 
         $task->setObservation($observation);
-        $entityManager->persist($task);
-        $entityManager->flush();
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
 
         $response = new Response("Ajout de l'observation réussie", Response::HTTP_OK);
 
         return $response;
+    }
+
+    /**
+     * @param $task_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/task/complete/{task_id}", name="complete_task")
+     */
+    public function changeStatut ($task_id) {
+        $task       =   $this->entityManager->getRepository(AgentTasks::class)->find($task_id);
+
+        $task->setStatut(1);
+
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->json([
+            "message"   => "Votre tâche est completé",
+            "error"     => false
+        ]);
     }
 }

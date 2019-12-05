@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Agent;
 use App\Entity\AgentTasks;
+use App\Entity\Projet;
 use App\Entity\User;
 use App\Form\AgentType;
 use App\Form\AgentTasksType;
@@ -15,6 +16,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +27,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class AgentController extends AbstractController
 {
+    private $security;
+    private $entityManager;
+
+    public function __construct( EntityManagerInterface $entityManager, Security $security )
+    {
+        $this->entityManager    =   $entityManager;
+        $this->security         =   $security;
+    }
 
     /**
      * @Route("/agents", name="list_agent")
@@ -40,7 +52,11 @@ class AgentController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return Response
      * @Route("/new/agent", name="create_agent")
+     * @throws \Exception
      */
     public function createAgent(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -77,10 +93,9 @@ class AgentController extends AbstractController
 
             // ... perform some action, such as saving the user to the database
             // for example, if Agent is a Doctrine entity, save it!
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
+            $this->entityManager->persist($user);
             //$entityManager->persist($agent);
-            $entityManager->flush();
+            $this->entityManager->flush();
             // Send an email to the user
             $this->sendEmail($user, $plainPassword);
 
@@ -238,5 +253,72 @@ class AgentController extends AbstractController
         $users          = $entityManager->getRepository(User::class)->findAllNormalsUsers();
 
         return $this->json(['members' => $users ]);
+    }
+
+    /**
+     * @Route("/user/projets", name="project_user")
+     * @return Response
+     * This function allow normal users to see projects in where they are assigned
+     */
+    public function show_all_project() {
+        $data = array();
+        $data['page'] = "Mes projets";
+
+        $emailUserConnected = $this->security->getUser()->getUsername();
+
+        $tasks               = $this->entityManager->getRepository(User::class)
+            ->findOneBy([ "email" => $emailUserConnected ])
+            ->getTasks();
+        $projets             = $this->entityManager->getRepository(User::class)
+            ->findOneBy([ "email" => $emailUserConnected ])
+            ->getProjets();
+        $data["tasks"] = $tasks;
+        $data["projets"] = $projets;
+
+        return $this->render('agent/my_projects.html.twig', $data);
+    }
+
+    /**
+     * @param $projet_id
+     * @return Response
+     * @Route("/user/projet/{projet_id}", name="user_projet")
+     */
+    public function getProjetId($projet_id) {
+        $data           = array();
+        $projet         =   $this->entityManager->getRepository(Projet::class)->find($projet_id);
+
+        $user_id             = $this->security->getUser()->getId();
+
+        $data['projet'] =   $projet;
+        $data['page']   =   $projet->getNom();
+        $data['tasks']  =   $this->entityManager->getRepository(AgentTasks::class)
+                                                ->findTasksRelatedToUserPerProjet($projet_id, $user_id);
+
+        return $this->render('agent/single_projet.html.twig', $data );
+
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/user/gettasks", name="get_user_tasks")
+     */
+    public function getAllTasksByUser() {
+
+        $user_id = $this->security->getUser()->getId();
+
+        $tasks = $this->security->getUser()->getTasks();
+
+        return $this->json(["tasks" => $tasks ]);
+    }
+
+    /**
+     * @return Response
+     * @Route("/user/tasks", name="all_user_tasks")
+     */
+    public function getTasks() {
+        $data = array();
+        $data['page'] = "Toutes mes tâches";
+
+        return $this->render('agent_tasks/all-tasks.html.twig', $data);
     }
 }

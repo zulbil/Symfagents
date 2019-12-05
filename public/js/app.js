@@ -202,5 +202,163 @@
                 }
             });
         })
+
+        $('.btn-complete').on("click", function (event){
+            var task_id = $(this).data('task-id');
+            bootbox.confirm({
+                message: "Etes vous sûr de vouloir finir cette tâche",
+                buttons: {
+                    confirm: {
+                        label: 'Oui',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Non',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if ( result ) {
+                        $.ajax({
+                            method: "GET",
+                            url: "/task/complete/"+task_id,
+                        }).done(function( data ) {
+                            if (data) {
+                                toastr.success(data.message);
+                            }
+                            //window.location.reload();
+                            setTimeout(function (){
+                                window.location.reload();
+                            }, 1000)
+                        });
+                    }
+
+                }
+            });
+        })
+
+        // Init DataTable
+        if ( $('#kt_datatable').length ) {
+            var datatable = $('#kt_datatable').KTDatatable({
+                // datasource definition
+                data: {
+                    type: 'remote',
+                    source: {
+                        read: {
+                            url: '/user/gettasks',
+                            map: function(raw) {
+                                // sample data mapping
+                                var dataSet = raw;
+                                if (typeof raw.data !== 'undefined') {
+                                    dataSet = raw.data;
+                                }
+                                return dataSet;
+                            },
+                        },
+                    },
+                    pageSize: 10,
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true,
+                },
+
+                // layout definition
+                layout: {
+                    scroll: false,
+                    footer: false,
+                },
+
+                // column sorting
+                sortable: true,
+
+                pagination: true,
+
+                search: {
+                    input: $('#generalSearch'),
+                },
+
+                // columns definition
+                columns: [
+                    {
+                        field: 'id',
+                        title: '#',
+                        sortable: 'asc',
+                        width: 40,
+                        type: 'number',
+                        selector: false,
+                        textAlign: 'center',
+                    }, {
+                        field: 'nom',
+                        title: 'Nom de la tâche',
+                    }, {
+                        field: 'description',
+                        title: 'Description',
+                        template: function(row, index, datatable) {
+                            return row.first_name + ' ' + row.last_name;
+                        },
+                    }, {
+                        field: 'date_debut',
+                        width: 150,
+                        title: 'Debut du projet',
+                        type: "datetime",
+                        format: 'MM/DD/YYYY'
+                    }, {
+                        field: 'date_fin',
+                        title: 'Fin de la tâche',
+                        type: 'datetime',
+                        format: 'MM/DD/YYYY'
+                    }, {
+                        field: 'statut',
+                        title: 'Statut',
+                        // callback function support for column rendering
+                        template: function(row) {
+                            var status = {
+                                0: {'title': 'En cours', 'class': 'kt-badge--brand'},
+                                1: {'title': 'Terminé', 'class': ' kt-badge--metal'}
+                            };
+                            return '<span class="kt-badge ' + status[row.status].class + ' kt-badge--inline kt-badge--pill">' + status[row.status].title + '</span>';
+                        },
+                    }, {
+                        field: 'priorite',
+                        title: 'Priorité',
+                        // callback function support for column rendering
+                        template: function(row) {
+                            var status = {
+                                0: {'title': 'Pending', 'class': 'kt-badge--brand'},
+                                1: {'title': 'Delivered', 'class': ' kt-badge--metal'},
+                                2: {'title': 'Canceled', 'class': ' kt-badge--primary'},
+                            };
+                            return '<span class="kt-badge ' + status[row.status].class + ' kt-badge--inline kt-badge--pill">' + status[row.status].title + '</span>';
+                        },
+                    },  {
+                        field: 'Actions',
+                        title: 'Actions',
+                        sortable: false,
+                        width: 130,
+                        overflow: 'visible',
+                        textAlign: 'center',
+                        template: function(row, index, datatable) {
+                            var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
+                            return '<div class="dropdown ' + dropup + '">\
+                        <a href="#" class="btn btn-hover-brand btn-icon btn-pill" data-toggle="dropdown">\
+                            <i class="la la-ellipsis-h"></i>\
+                        </a>\
+                        <div class="dropdown-menu dropdown-menu-right">\
+                            <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>\
+                            <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>\
+                            <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>\
+                        </div>\
+                    </div>\
+                    <a href="#" class="btn btn-hover-brand btn-icon btn-pill" title="Edit details">\
+                        <i class="la la-edit"></i>\
+                    </a>\
+                    <a href="#" class="btn btn-hover-danger btn-icon btn-pill" title="Delete">\
+                        <i class="la la-trash"></i>\
+                    </a>';
+                        },
+                    }],
+
+            });
+        }
     })
 } (jQuery))

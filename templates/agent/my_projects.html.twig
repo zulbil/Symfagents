@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ page }} {% endblock %}
+
+{% block body %}
+    <div class="row">
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="col-lg-12">
+                <div class="text-right mt-4">
+                    <a class="btn btn-dark" href="/new/projet">Commencer un nouveau projet</a>
+                </div>
+            </div>
+        {% endif %}
+        {% if projets %}
+            {% for projet in projets %}
+                <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+                    <!--begin::Portlet-->
+                    <div class="kt-portlet kt-portlet--height-fluid">
+                        <div class="kt-portlet__head kt-portlet__head--noborder">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">Projet #{{ projet.id }}</h3>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body kt-portlet__body--fluid">
+                            <div class="kt-widget-13">
+                                <div class="kt-widget-13__body">
+                                    <a class="kt-widget-13__title" href="#"> {{ projet.nom }}</a>
+                                    <div class="kt-widget-13__desc">
+                                        {{ projet.description }}
+                                    </div>
+                                </div>
+                                <div class="kt-widget-13__foot">
+                                    <div class="kt-widget-13__label">
+                                        <div class="btn btn-sm btn-label btn-bold">
+                                            03 SEP, 2018
+                                        </div>
+                                    </div>
+                                    <div class="kt-widget-13__toolbar">
+                                        <a href="/user/projet/{{ projet.id }}" class="btn btn-default btn-sm btn-bold btn-upper">Voir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Portlet-->	</div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-secondary fade show" role="alert">
+                <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+                <div class="alert-text">Vous n'êtes associé à aucun projet pour le moment </div>
+                <div class="alert-close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="la la-close"></i></span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

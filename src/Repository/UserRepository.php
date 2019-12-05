@@ -66,8 +66,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     */
 
     /**
-     *@params array
-     *@return array of user
+     * @params array
+     * @return array of user
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function findAllNormalsUsers():array
     {
