@@ -116,9 +116,11 @@ class AgentTasksController extends AbstractController
      */
     public function show_all_tasks($user_id) {
         $data = array();
-
+        $data['page'] = "Mes tâches";
         $entityManager  = $this->getDoctrine()->getManager();
         $task           = $entityManager->getRepository(AgentTasks::class)->find($user_id);
+
+        return $this->render('agent/my_tasks.html.twig', $data);
     }
 
     /**
@@ -135,11 +137,12 @@ class AgentTasksController extends AbstractController
         $task_id     = (int)$request->request->get('task_id');
 
         $user        = $entityManager->getRepository(User::class)->find($user_id);
+        $projet      =  $entityManager->getRepository(Projet::class)->find($projet_id);
 
         /**
          * Prevent to add user on a specific task without adding him to project that include this task
          */
-        if($user->getProjet()->getId() !== $projet_id ) {
+        if(!$user->getProjets()->contains($projet) ) {
             return $this->json([
                 "message" => "Impossible d'ajouter cet agent car il n'appartient pas au projet",
                 "error"   => true
@@ -151,11 +154,13 @@ class AgentTasksController extends AbstractController
         /**
          * Check if a task has already an assignee on it
          */
-        if($task->getAgent()->getId() === $user_id) {
-            return $this->json([
-                "message" => "Cette tâche a déjà été assigné à cet utilisateur",
-                "error"   => true
-            ]);
+        if ($task->getAgent()) {
+            if($task->getAgent()->getId() === $user_id) {
+                return $this->json([
+                    "message" => "Cette tâche a déjà été assigné à cet utilisateur",
+                    "error"   => true
+                ]);
+            }
         }
 
         $task->setAgent($user);

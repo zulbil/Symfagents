@@ -172,14 +172,11 @@
                             </div>
                             <div class="tab-pane" id="kt_portlet_base_demo_3_2_tab_content" role="tabpanel">
                                 <button
-                                        type="button"
                                         class="btn btn-outline-brand btn-elevate btn-pill mb-4"
-                                        data-toggle="collapse"
-                                        href="#form-add-task"
-                                        aria-expanded="true"
-                                        aria-controls="form-add-task"
+                                        data-toggle="modal"
+                                        href="#exampleModal"
                                 >
-                                    <i class="la la-plus"></i> Ajouter un utilisateur
+                                    <i class="la la-plus"></i> Inviter un utilisateur
                                 </button>
                                 {% if members %}
                                     <table class="table" id="table_list_agent">
@@ -201,7 +198,7 @@
                                                 <td> {{ member.fonction }} </td>
                                                 <td>
                                                     {% if is_granted('ROLE_ADMIN') %}
-                                                        <button type="button" data-agent-id="{{ member.id }}" class="btn btn-danger btn-elevate btn-circle btn-icon">
+                                                        <button type="button" id="remove-member" data-member-id="{{ member.id }}" data-projet-id="{{ projet.id }}" class="btn btn-danger btn-elevate btn-circle btn-icon">
                                                             <i class="flaticon2-trash"></i>
                                                         </button>
                                                     {% endif %}
@@ -230,7 +227,7 @@
         </div>
 
         <div class="modal fade bd-example-modal-md" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Invites les membres</h5>

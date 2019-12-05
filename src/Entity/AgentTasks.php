@@ -149,7 +149,6 @@ class AgentTasks
 
         return $this;
     }
-    
 
     public function getProjet(): ?Projet
     {

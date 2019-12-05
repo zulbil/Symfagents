@@ -145,25 +145,69 @@ class ProjetController extends AbstractController
      * @param Request $request
      * @Route("/members/invite",name="invite_member")
      * @return Json Array
+     * This function is used to invite a user to a project
      */
     public function addMemberToProject(Request $request) {
         $entityManager  = $this->getDoctrine()->getManager();
 
-       $user_id     = (int)$request->request->get("user_id");
-       $projet_id   = (int)$request->request->get('projet_id');
+        $user_id     = (int)$request->request->get("user_id");
+        $projet_id   = (int)$request->request->get('projet_id');
 
-       $user        = $entityManager->getRepository(User::class)->find($user_id);
-       $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
+        $user        = $entityManager->getRepository(User::class)->find($user_id);
+        $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
 
-       $user->addProjet($projet);
-       $projet->addMember($user);
+        if ($projet->getMembers()->contains($user)) {
+            return $this->json([
+                "message" =>"Cet utilisateur existe déjà dans ce projet",
+                "error"   => true
+            ]);
+        }
 
-       $entityManager->persist($projet);
-       $entityManager->persist($user);
+        $user->addProjet($projet);
+        $projet->addMember($user);
 
-       $entityManager->flush();
+        $entityManager->persist($projet);
+        $entityManager->persist($user);
 
-       return $this->json([ "message" => "L'utilisateur a été correctement ajouté au projet" ]);
+        $entityManager->flush();
+
+        return $this->json([
+            "message"   => "L'utilisateur a été correctement ajouté au projet",
+            "error"     => false
+        ]);
+
+    }
+
+    /**
+     * @param $projet_id
+     * @param $user_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/remove/projet/{projet_id}/member/{user_id}",name="remove_member_project")
+     * This function is used for removing a user from a project
+     */
+    public function removeMemberFromProject($projet_id, $user_id) {
+        $entityManager  =   $this->getDoctrine()->getManager();
+
+        $user        = $entityManager->getRepository(User::class)->find($user_id);
+        $projet      = $entityManager->getRepository(Projet::class)->find($projet_id);
+
+        $user->removeProjet($projet);
+        $projet->removeMember($user);
+
+        $tasks = $projet->getTasks();
+
+        foreach ($tasks as $task) {
+            $user->removeTask($task);
+        }
+        $entityManager->persist($projet);
+        $entityManager->persist($user);
+
+        $entityManager->flush();
+
+        return $this->json([
+            "message"  => "L'utilisateur a été retiré du projet",
+            "error"     => false
+        ]);
 
     }
 }
