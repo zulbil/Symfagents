@@ -23,7 +23,7 @@ class ProjetController extends AbstractController
     /**
      * @Route("/", name="projets")
      */
-    public function index()
+    public function index(Request $request)
     {
         $projets = $this->getDoctrine()->getManager()->getRepository(Projet::class)->findAll();
         $page = "Liste des projets";

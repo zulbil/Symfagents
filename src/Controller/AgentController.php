@@ -14,6 +14,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -110,6 +111,11 @@ class AgentController extends AbstractController
 
     /**
      * @Route("/agent/{id}", name="show_agent")
+     * @param int $id
+     * @param Request $request
+     * @return  Response
+     * @throws \Exception
+     * This function is used to show a user information
      */
     public function show(int $id, Request $request)
     {
@@ -156,6 +162,9 @@ class AgentController extends AbstractController
 
     /**
      * @Route("/remove/agent/{id}", name="remove_agent")
+     * @param User $agent
+     * @return JsonResponse
+     * This function is used to remove user
      */
     public function remove(User $agent)
     {
@@ -170,7 +179,11 @@ class AgentController extends AbstractController
     }
 
     /**
-     * @Route("/update-one.html.twig/agent/{id}", name="update_agent")
+     * @Route("/update/agent/{id}", name="update_agent")
+     * @param $id
+     * @param Request $request
+     * @return Response
+     * This function is used to update a single agent (user )
      */
     public function update($id, Request $request) 
     {
@@ -227,19 +240,27 @@ class AgentController extends AbstractController
         return $plainPassword;
     }
 
+    /**
+     * @param User $user
+     * @param $password
+     * @throws \Exception
+     * This function is used to send a activation account link to the new user
+     */
     public function sendEmail(User $user, $password)
     {
-        $email = (new TemplatedEmail())
-            ->from('jkazdev@gmail.com')
-            //->from('joel.khang@hologram.cd')
-            ->to($user->getEmail())
-            ->subject('Bienvenue à SymfAgent')
-            ->htmlTemplate('app/mail.html.twig')
-            ->context([
-                'expiration_date' => new \DateTime('+7 days'),
-                'user' => $user,
-                'plain_password' => $password
-            ]);
+        $request    = new Request();
+        $email      = (new TemplatedEmail())
+                        ->from('jkazdev@gmail.com')
+                        //->from('joel.khang@hologram.cd')
+                        ->to($user->getEmail())
+                        ->subject('Bienvenue à SymfAgent')
+                        ->htmlTemplate('app/mail.html.twig')
+                        ->context([
+                            'expiration_date' => new \DateTime('+7 days'),
+                            'user' => $user,
+                            'plain_password' => $password,
+                            'host'  => $request->server->get('REMOTE_ADDR')
+                        ]);
 
         $this->mailer->send($email);
     }
@@ -247,6 +268,8 @@ class AgentController extends AbstractController
     /**
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/members/list", name="members_list")
+     * @throws \Doctrine\DBAL\DBALException
+     * @param void
      */
     public function getAllUserExceptAdmin() {
         $entityManager  = $this->getDoctrine()->getManager();
