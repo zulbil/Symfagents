@@ -101,6 +101,7 @@ class AgentTasksController extends AbstractController
      * @Route("/task/{task_id}", name="show_task")
      * @param  $task_id
      * @return Response
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function showTask($task_id) {
         $task          = $this->entityManager->getRepository(AgentTasks::class)->find($task_id);

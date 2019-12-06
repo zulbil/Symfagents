@@ -76,13 +76,13 @@
                                                                             <span class="kt-nav__section-text">Actions</span>
                                                                         </li>
                                                                         <li class="kt-nav__item">
-                                                                            <a href="/projet/edit/1" class="kt-nav__link">
+                                                                            <a href="/task/edit/{{ task.id }}" class="kt-nav__link">
                                                                                 <i class="kt-nav__link-icon la la-edit"></i>
                                                                                 <span class="kt-nav__link-text">Modifier</span>
                                                                             </a>
                                                                         </li>
                                                                         <li class="kt-nav__item">
-                                                                            <a href="#" class="kt-nav__link btn-remove" data-agent-id="1">
+                                                                            <a href="#" class="kt-nav__link btn-remove-task" data-task-id="{{ task.id }}">
                                                                                 <i class="kt-nav__link-icon la la-trash"></i>
                                                                                 <span class="kt-nav__link-text">Supprimer</span>
                                                                             </a>
@@ -97,7 +97,7 @@
                                                     <div class="kt-widget-13">
                                                         <div class="kt-widget-13__body">
                                                             <div class="kt-widget-13__desc">
-                                                                {{ task.description }}
+                                                                {{ task.description|striptags|length > 150 ? task.description|striptags|slice(0, 150) ~ '...' : task.description|striptags }}
                                                             </div>
                                                         </div>
                                                         <div class="kt-widget-13__foot">

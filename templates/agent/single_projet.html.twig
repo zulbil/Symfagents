@@ -36,7 +36,7 @@
                                                     <div class="kt-widget-13">
                                                         <div class="kt-widget-13__body">
                                                             <div class="kt-widget-13__desc">
-                                                                {{ task.description }}
+                                                                {{ task.description|striptags|length > 150 ? task.description|striptags|slice(0, 150) ~ '...' : task.description|striptags }}
                                                             </div>
                                                         </div>
                                                         <div class="kt-widget-13__foot">

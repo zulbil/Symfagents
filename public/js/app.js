@@ -248,7 +248,7 @@
                             url: '/user/gettasks',
                             map: function(raw) {
                                 // sample data mapping
-                                var dataSet = raw;
+                                var dataSet = raw.tasks;
                                 if (typeof raw.data !== 'undefined') {
                                     dataSet = raw.data;
                                 }
@@ -293,30 +293,38 @@
                     }, {
                         field: 'description',
                         title: 'Description',
+                        width: 150,
                         template: function(row, index, datatable) {
-                            return row.first_name + ' ' + row.last_name;
+                            var textToShow = row.description;
+                            if (row.description.length > 50 ) {
+                                textToShow = row.description.slice(0, 50) + " ..."
+                            }
+                            return textToShow;
                         },
                     }, {
                         field: 'date_debut',
-                        width: 150,
                         title: 'Debut du projet',
-                        type: "datetime",
-                        format: 'MM/DD/YYYY'
+                        template : function (row) {
+                            var dateToshow = new Date(row.date_debut.timestamp* 1000 );
+                            return dateToshow.toLocaleDateString()+" "+dateToshow.toLocaleTimeString();
+                        }
                     }, {
                         field: 'date_fin',
                         title: 'Fin de la tâche',
-                        type: 'datetime',
-                        format: 'MM/DD/YYYY'
+                        template : function (row) {
+                            var dateToshow = new Date(row.date_fin.timestamp* 1000 );
+                            return dateToshow.toLocaleDateString()+" "+dateToshow.toLocaleTimeString();
+                        }
                     }, {
                         field: 'statut',
                         title: 'Statut',
                         // callback function support for column rendering
                         template: function(row) {
                             var status = {
-                                0: {'title': 'En cours', 'class': 'kt-badge--brand'},
-                                1: {'title': 'Terminé', 'class': ' kt-badge--metal'}
+                                0: {'title': 'En cours', 'class': 'btn-label-brand'},
+                                1: {'title': 'Terminé', 'class': 'btn-label-success'}
                             };
-                            return '<span class="kt-badge ' + status[row.status].class + ' kt-badge--inline kt-badge--pill">' + status[row.status].title + '</span>';
+                            return '<span class="btn btn-bold btn-sm btn-font-sm ' + status[row.statut].class + ' ">' + status[row.statut].title + '</span>';
                         },
                     }, {
                         field: 'priorite',
@@ -324,11 +332,11 @@
                         // callback function support for column rendering
                         template: function(row) {
                             var status = {
-                                0: {'title': 'Pending', 'class': 'kt-badge--brand'},
-                                1: {'title': 'Delivered', 'class': ' kt-badge--metal'},
-                                2: {'title': 'Canceled', 'class': ' kt-badge--primary'},
+                                0: {'title': 'Basse', 'class': 'btn-label-success'},
+                                1: {'title': 'Moyenne', 'class': 'btn-label-warning'},
+                                2: {'title': 'Elevé', 'class': ' btn-label-danger'},
                             };
-                            return '<span class="kt-badge ' + status[row.status].class + ' kt-badge--inline kt-badge--pill">' + status[row.status].title + '</span>';
+                            return '<span class="btn btn-bold btn-sm btn-font-sm ' + status[row.priorite].class + ' ">' + status[row.priorite].title + '</span>';
                         },
                     },  {
                         field: 'Actions',
@@ -338,23 +346,13 @@
                         overflow: 'visible',
                         textAlign: 'center',
                         template: function(row, index, datatable) {
+                            var urlTask = "/task/"+row.id;
                             var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
                             return '<div class="dropdown ' + dropup + '">\
-                        <a href="#" class="btn btn-hover-brand btn-icon btn-pill" data-toggle="dropdown">\
-                            <i class="la la-ellipsis-h"></i>\
+                        <a href="'+urlTask+'" class="btn btn-hover-brand btn-icon btn-pill">\
+                            <i class="la la-eye"></i>\
                         </a>\
-                        <div class="dropdown-menu dropdown-menu-right">\
-                            <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>\
-                            <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>\
-                            <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>\
-                        </div>\
-                    </div>\
-                    <a href="#" class="btn btn-hover-brand btn-icon btn-pill" title="Edit details">\
-                        <i class="la la-edit"></i>\
-                    </a>\
-                    <a href="#" class="btn btn-hover-danger btn-icon btn-pill" title="Delete">\
-                        <i class="la la-trash"></i>\
-                    </a>';
+                    </div>';
                         },
                     }],
 

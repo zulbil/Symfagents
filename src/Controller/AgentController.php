@@ -8,6 +8,7 @@ use App\Entity\Projet;
 use App\Entity\User;
 use App\Form\AgentType;
 use App\Form\AgentTasksType;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -19,6 +20,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\HttpFoundation\Response;
@@ -323,20 +330,46 @@ class AgentController extends AbstractController
 
     /**
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      * @Route("/user/gettasks", name="get_user_tasks")
      */
     public function getAllTasksByUser() {
+
+//        $encoders         =   [ new JsonEncoder() , new XmlEncoder() ];
+//        $normalizers      =   [ new ObjectNormalizer() ];
+//        $serializer       =   new Serializer($normalizers, $encoders);
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+
+        // all callback parameters are optional (you can omit the ones you don't use)
+        $dateCallback = function ($innerObject, $outerObject, string $attributeName, string $format = null, array $context = []) {
+            return $innerObject instanceof \DateTime ? $innerObject->format('Y-m-d H:i:s') : '';
+        };
+
+        $defaultContext = [
+            AbstractNormalizer::CALLBACKS => [
+                'date_debut' => $dateCallback
+            ]
+        ];
+
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        //$normalizer = new GetSetMethodNormalizer($classMetadataFactory, null, null, null, null, $defaultContext);
+        $serializer = new Serializer([ $normalizer ]);
 
         $user_id = $this->security->getUser()->getId();
 
         $tasks = $this->security->getUser()->getTasks();
 
-        return $this->json(["tasks" => $tasks ]);
+        $jsonContent = $serializer->normalize($tasks, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => [ 'tasks','agent','dateDebut','dateFin', 'projet' ]
+        ] );
+
+        return $this->json(["tasks" => $jsonContent ]);
     }
 
     /**
-     * @return Response
-     * @Route("/user/tasks", name="all_user_tasks")
+     * @return Response     * @Route("/user/tasks", name="all_user_tasks")
      */
     public function getTasks() {
         $data = array();
@@ -344,4 +377,5 @@ class AgentController extends AbstractController
 
         return $this->render('agent_tasks/all-tasks.html.twig', $data);
     }
+
 }

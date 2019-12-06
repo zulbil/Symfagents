@@ -42,22 +42,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      * It checks to see if the current route is named app_login and if the request
      *  method is POST. 
      * If those things are true, Symfony will assume that a user is trying to login.
+     * This function allow authentication on login page
      */
     public function supports(Request $request)
     {
-        // return 'app_login' === $request->attributes->get('_route')
-        //          && $request->isMethod('POST');
-        $authorization = false; 
-        if ('app_login' === $request->attributes->get('_route')
-        && $request->isMethod('POST')) {
-            $authorization = true; 
-        }
-        if ('app_activate' === $request->attributes->get('_route')
-        && $request->isMethod('POST')) {
-            $authorization = true; 
-        }
-
-        return $authorization; 
+         return 'app_login' === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
     /**
