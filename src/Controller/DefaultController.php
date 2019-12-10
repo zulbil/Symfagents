@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\AgentTasks;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +22,9 @@ use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class DefaultController extends AbstractController
 {
@@ -64,31 +71,44 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/test", name="test", methods={"GET"})
+     * @Route("/test", name="test")
      */
     public function test()
     {
-        $this->encoders         =   [ new JsonEncoder() , new XmlEncoder() ];
-        $this->normalizers      =   [ new ObjectNormalizer() ];
-        $this->serializer       =   new Serializer($this->normalizers, $this->encoders);
+        $formFactory = Forms::createFormFactory();
 
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $form = $formFactory->createBuilder()
+           ->add('username', TextType::class)
+           ->add('showEmail', CheckboxType::class)
+           ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+               $user = $event->getData();
+               $form = $event->getForm();
 
-        $user       = $this->entityManager->getRepository(User::class)->find(3);
-        $task       = $this->entityManager->getRepository(AgentTasks::class)->find(1);
+               if (!$user) {
+                   return;
+               }
 
-        $tasks = $user->getTasks();
+               // checks whether the user has chosen to display their email or not.
+               // If the data was submitted previously, the additional value that is
+               // included in the request variables needs to be removed.
+               var_dump($user);
+               exit();
 
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $serializer = new Serializer([$normalizer]);
+               if (isset($user['showEmail']) && $user['showEmail']) {
+                   $form->add('email', EmailType::class);
+               } else {
+                   unset($user['email']);
+                   $event->setData($user);
+               }
+           })
+           ->add('save', SubmitType::class)
+           ->getForm();
 
-        //$jsonContent = $serializer->normalize($user, 'json', ['groups' => ['group1', 'group2', 'group3', 'group4']]);
-        //$jsonContent = $serializer->normalize($task, 'json', [ AbstractNormalizer::ATTRIBUTES => ['nom', 'description','date_debut' ] ] );
-        $jsonContent = $serializer->normalize($tasks, 'json', [
-                                        AbstractNormalizer::IGNORED_ATTRIBUTES => [ 'tasks','agent','dateDebut','dateFin', 'projets' ]
-        ] );
+       $data = array();
+       $data['form'] = $form->createView();
+       $data['page'] = "Test";
 
-        return $this->json(["data" => $jsonContent ]);
+       return $this->render('app/test.html.twig', $data);
     }
 
     

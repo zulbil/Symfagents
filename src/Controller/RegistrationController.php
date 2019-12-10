@@ -5,7 +5,15 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\LoginFormAuthenticator;
+use App\Service\FileUploader;
+use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,15 +26,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Validator\Constraints\File;
 
 class RegistrationController extends AbstractController
 {
     private $session; 
-    private $mailer; 
+    private $mailer;
+    private $entityManager;
 
-    public function __construct(SessionInterface $session, MailerInterface $mailer) {
+    public function __construct(SessionInterface $session, MailerInterface $mailer, EntityManagerInterface $entityManager) {
         $this->session  =   $session; 
         $this->mailer   =   $mailer;
+        $this->entityManager    =   $entityManager;
     }
     /**
      * @Route("/register", name="app_register")
@@ -77,11 +88,16 @@ class RegistrationController extends AbstractController
 
         $this->mailer->send($email);
     }
+
     /**
      * @Route("/activate/user/{id}", name="app_activate")
+     * @param Request $request
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param LoginFormAuthenticator $authenticator
+     * @param $id
+     * @return Response
      */
-    public function activate(Request $request, GuardAuthenticatorHandler $guardHandler, 
-    LoginFormAuthenticator $authenticator,$id) {
+    public function activate(Request $request, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator,$id) {
         $entityManager  = $this->getDoctrine()->getManager(); 
         $user           = $entityManager->getRepository(User::class)->find($id); 
 
@@ -125,13 +141,79 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     *@Route("/profil", name="user_profile")
+     * @Route("/user/profil", name="user_profile")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param FileUploader $fileuploader
+     * @return Response
      */
-    public function userProfile () {
+    public function userProfile (Request $request, FileUploader $fileuploader) {
         $user = $this->getUser();
         $data['user'] = $user;
         $data['page'] = "Mon Profil";
 
+        $userProfil     = array(
+            "prenom"        => $user->getPrenom(),
+            "nom"           => $user->getNom(),
+            "postnom"       => $user->getPostnom(),
+            "fonction"      => $user->getfonction(),
+            "email"         => $user->getEmail()
+        );
+
+        $formProfil = $this->createFormBuilder($userProfil)
+                           ->add('file', FileType::class, [
+                               'constraints' => [
+                                   new File([
+                                       'maxSize' => '5024k',
+                                       'mimeTypes' => [
+                                           'image/jpg',
+                                           'image/png',
+                                           'image/jpeg',
+                                       ],
+                                       'mimeTypesMessage' => 'Ce fichier n\'est pas une image valide',
+                                   ])
+                               ]
+                           ])
+                           ->add('prenom', TextType::class, [
+                               'label' => 'Prenom'
+                           ])
+                           ->add('nom', TextType::class, [
+                               'label' => 'Nom'
+                           ])
+                           ->add('postnom', TextType::class, [ 'label' => 'Postnom'])
+                           ->add('fonction', TextType::class, [
+                               'label' => 'Fonction',
+                               'attr' => [ 'disabled' => true ]
+                           ])
+                           ->add('email', EmailType::class, [ 'label' => 'Email' ])
+                           ->add('save', SubmitType::class, [
+                               'label' => 'Enregistrer',
+                               'attr'   => [ 'class' => 'btn btn-success']
+                           ])
+                           ->add('reset', ResetType::class, ['label' => 'Reset', 'attr' => ['class' => 'btn btn-secondary'] ])
+                           ->getForm();
+
+        $formProfil->handleRequest($request);
+
+        if ($formProfil->isSubmitted() && $formProfil->isValid()) {
+            /** @var UploadedFile $brochureFile */
+            $photo = $formProfil['file']->getData();
+            $user = $this->entityManager->getRepository(User::class)->find($this->getUser()->getId());
+
+            if ($photo) {
+                $photoName = $fileuploader->upload($photo);
+                $photoName = "/uploads/images/$photoName";
+                $user->setPhoto($photoName);
+            }
+            $user->setNom($formProfil['nom']->getData());
+            $user->setPrenom($formProfil['prenom']->getData());
+            $user->setPostnom($formProfil['postnom']->getData());
+
+            $this->entityManager->flush();
+
+            $this->redirectToRoute('user_profile');
+        }
+        $data['form'] = $formProfil->createView();
         return $this->render('app/profile.html.twig', $data );
     }
 

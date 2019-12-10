@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -37,11 +38,13 @@ class AgentController extends AbstractController
 {
     private $security;
     private $entityManager;
+    private $mailer;
 
-    public function __construct( EntityManagerInterface $entityManager, Security $security )
+    public function __construct( EntityManagerInterface $entityManager, Security $security, MailerInterface $mailer )
     {
         $this->entityManager    =   $entityManager;
         $this->security         =   $security;
+        $this->mailer           =   $mailer;
     }
 
     /**
@@ -96,16 +99,20 @@ class AgentController extends AbstractController
                 )
             );
             $user->setRoles(["ROLE_USER"]);
-            $user->setFirstname($agent->getPrenom());
-            $user->setLastname($agent->getNom());
+            $user->setPrenom($agent->getPrenom());
+            $user->setPostnom($agent->getPostnom());
+            $user->setNom($agent->getNom());
+            $user->setFonction($agent->getFonction());
+            $user->setSalaire($agent->getSalaire());
 
             // ... perform some action, such as saving the user to the database
             // for example, if Agent is a Doctrine entity, save it!
             $this->entityManager->persist($user);
             //$entityManager->persist($agent);
             $this->entityManager->flush();
+            $host   = $request->server->get('HTTP_HOST');
             // Send an email to the user
-            $this->sendEmail($user, $plainPassword);
+            $this->sendEmail($user, $plainPassword, $host);
 
             return $this->redirectToRoute('list_agent');
         }
@@ -251,9 +258,10 @@ class AgentController extends AbstractController
      * @param User $user
      * @param $password
      * @throws \Exception
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * This function is used to send a activation account link to the new user
      */
-    public function sendEmail(User $user, $password)
+    public function sendEmail(User $user, $password, Request $request)
     {
         $request    = new Request();
         $email      = (new TemplatedEmail())
@@ -268,7 +276,8 @@ class AgentController extends AbstractController
                             'plain_password' => $password,
                             'host'  => $request->server->get('REMOTE_ADDR')
                         ]);
-
+        var_dump(['host' => $request->server->get('REMOTE_ADDR')]);
+        exit();
         $this->mailer->send($email);
     }
 

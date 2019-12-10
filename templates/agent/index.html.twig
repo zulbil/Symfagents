@@ -22,6 +22,7 @@
                                 <th scope="col">Identifiant</th>
                                 <th scope="col">Nom complet de l'agent</th>
                                 <th scope="col">Salaire</th>
+                                <th scope="col">Etat</th>
                                 <th scope="col">Fonction</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -32,6 +33,13 @@
                                     <th scope="row">{{ agent.id }}</th>
                                     <td>{{ agent.nom }} {{ agent.postnom }} {{ agent.prenom }}</td>
                                     <td> {{ agent.salaire }}  </td>
+                                    <td>
+                                        {% if agent.statut == 1 %}
+                                            <span class="btn btn-bold btn-sm btn-font-sm btn-label-success">Actif</span>
+                                        {% else %}
+                                            <span class="btn btn-bold btn-sm btn-font-sm btn-label-danger">Inactif</span>
+                                        {% endif %}
+                                    </td>
                                     <td> {{ agent.fonction }} </td>
                                     <td>
                                         <a href="/agent/{{ agent.id }}"  class="btn btn-primary"> Voir </a>

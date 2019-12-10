@@ -94,6 +94,11 @@ class User implements UserInterface
      */
     private $projets;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -305,6 +310,18 @@ class User implements UserInterface
             $this->projets->removeElement($projet);
             $projet->removeMember($this);
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-
+{% block title %} {{ page }} {% endblock %}
 {% block body %}
-    <div class="row mt-4">
+ {#   <div class="row mt-4">
         <div class="col-3">
             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
@@ -16,6 +16,171 @@
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
                 <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
                 <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+            </div>
+        </div>
+    </div>#}
+    <div class="kt-grid kt-grid--desktop kt-grid--ver kt-grid--ver-desktop kt-app">
+
+        <div class="kt-grid__item kt-app__toggle kt-app__aside kt-app__aside--sm kt-app__aside--fit" id="kt_profile_aside">
+            <div class="kt-portlet">
+                <div class="kt-portlet__body">
+                    <div class="kt-widget kt-widget--general-1">
+                        <div class="kt-media kt-media--brand kt-media--md kt-media--circle">
+                            <img src="{{ app.user.photo }}" alt="image">
+                        </div>
+                        <div class="kt-widget__wrapper">
+                            <div class="kt-widget__label">
+                                <a href="#" class="kt-widget__title">
+                                    {{ user.prenom }} {{ user.nom }}
+                                </a>
+                                <span class="kt-widget__desc">
+                                {{ user.fonction }}
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kt-portlet__separator"></div>
+
+                <div class="kt-portlet__body">
+                    <ul class="kt-nav kt-nav--bolder kt-nav--fit-ver kt-nav--v4" role="tablist">
+                        <li class="kt-nav__item active">
+                            <a class="kt-nav__link active" href="/keen/preview/demo1/custom/profile/personal-information.html" role="tab">
+                                <span class="kt-nav__link-icon"><i class="flaticon2-user"></i></span>
+                                <span class="kt-nav__link-text">Informations personnelles</span>
+                            </a>
+                        </li>
+                        <li class="kt-nav__item">
+                            <a class="kt-nav__link" href="/keen/preview/demo1/custom/profile/account-settings.html" role="tab">
+                                <span class="kt-nav__link-icon"><i class="flaticon-feed"></i></span>
+                                <span class="kt-nav__link-text">Paramètres du compte</span>
+                            </a>
+                        </li>
+                        <li class="kt-nav__item">
+                            <a class="kt-nav__link" href="/keen/preview/demo1/custom/profile/change-password.html" role="tab">
+                                <span class="kt-nav__link-icon"><i class="flaticon2-settings"></i></span>
+                                <span class="kt-nav__link-text">Changer le mot de passe</span>
+                            </a>
+                        </li>
+                        <li class="kt-nav__item  ">
+                            <a class="kt-nav__link" href="/keen/preview/demo1/custom/profile/user-settings.html" role="tab">
+                                <span class="kt-nav__link-icon"><i class="flaticon2-chart2"></i></span>
+                                <span class="kt-nav__link-text">Paramètres Utilisateurss</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="kt-portlet kt-portlet--head-noborder">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title  kt-font-danger">
+                            Important Update
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <span class="kt-badge kt-badge--bolder kt-badge kt-badge--inline kt-badge--danger">Now</span>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-portlet__body--fit-top">
+                    <div class="kt-section kt-section--space-sm">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                    </div>
+                    <div class="kt-section kt-section--last">
+                        <a href="#" class="btn btn-brand btn-sm btn-bold"><i class=""></i> Take Action</a>&nbsp;
+                        <a href="#" class="btn btn-clean btn-sm btn-bold">Dismiss</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="kt-grid__item kt-grid__item--fluid kt-app__content">
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">Information personnelles <small>Modifier</small></h3>
+                    </div>
+                </div>
+                {#<form class="kt-form kt-form--label-right" id="kt_profile_form" method="post">#}
+                {{ form_start(form, { 'attr': {'class': 'kt-form kt-form--label-right dropzone', 'id':'kt_profile_form' }}) }}
+                    <div class="kt-portlet__body">
+                        <div class="kt-section kt-section--first">
+                            <div class="kt-section__body">
+                                <div class="row">
+                                    <label class="col-xl-3"></label>
+                                    <div class="col-lg-9 col-xl-6">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label">Avatar</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        {#<div class="kt-avatar kt-avatar--outline kt-avatar--circle-" id="kt_profile_avatar">
+                                            <div class="kt-avatar__holder" style="background-image: url({{ asset("media/users/100_3.jpg") }});"></div>
+                                            <label class="kt-avatar__upload" data-toggle="kt-tooltip" title="" data-original-title="Change avatar">
+                                                <i class="fa fa-pen"></i>
+                                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg">
+                                            </label>
+                                            <span class="kt-avatar__cancel" data-toggle="kt-tooltip" title="" data-original-title="Cancel avatar">
+                                                    <i class="fa fa-times"></i>
+                                                </span>
+                                        </div>#}
+                                        {{ form_widget(form.file) }}
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label">{{ form_label(form.prenom) }}</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                       {{ form_widget(form.prenom) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label">{{ form_label(form.nom) }}</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        {{ form_widget(form.nom) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label">{{ form_label(form.postnom) }}</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        {{ form_widget(form.postnom) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label">{{ form_label(form.fonction) }}</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        {{ form_widget(form.fonction) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 col-form-label"> {{ form_label(form.email) }} </label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
+                                            {{ form_widget(form.email) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="kt-form__actions">
+                            <div class="row">
+                                <div class="col-lg-3 col-xl-3">
+                                </div>
+                                <div class="col-lg-9 col-xl-9">
+                                    {{ form_widget(form.save) }}
+                                    {{ form_widget(form.reset) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+                {#</form>#}
             </div>
         </div>
     </div>

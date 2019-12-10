@@ -2,8 +2,8 @@
     $(document).ready(function () {
         // Handle remove event
         $('.btn-remove').on('click', function (event) {
-            var agent_id    = $(this).data("agent-id"); 
-            var url         = "/remove/agent/"+agent_id; 
+            var agent_id    = $(this).data("agent-id");
+            var url         = "/remove/agent/"+agent_id;
             bootbox.confirm({
                 message: "Etes vous sûr de vouloir supprimer cet agent",
                 buttons: {
@@ -22,10 +22,10 @@
                             method: "GET",
                             url: url
                         }).done(function( msg ) {
-                            window.location.reload(); 
+                            window.location.reload();
                         });
                     }
-                    
+
                 }
             });
         })
@@ -357,6 +357,17 @@
                     }],
 
             });
+        }
+
+        if ($('.form-authenticate').length > 0 ) {
+            var id = 0;
+            $('#personne').on("change", function (event){
+
+                id = $(this).val();
+                $('.complement-info').hide();
+                $('div[data-id="'+id+'"]').show();
+            });
+
         }
     })
 } (jQuery))
