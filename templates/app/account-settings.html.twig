@@ -27,14 +27,14 @@
 
                 <div class="kt-portlet__body">
                     <ul class="kt-nav kt-nav--bolder kt-nav--fit-ver kt-nav--v4" role="tablist">
-                        <li class="kt-nav__item active">
-                            <a class="kt-nav__link active" href="/user/profil" role="tab">
+                        <li class="kt-nav__item">
+                            <a class="kt-nav__link" href="/user/profil" role="tab">
                                 <span class="kt-nav__link-icon"><i class="flaticon2-user"></i></span>
                                 <span class="kt-nav__link-text">Informations personnelles</span>
                             </a>
                         </li>
-                        <li class="kt-nav__item">
-                            <a class="kt-nav__link" href="/user/account" role="tab">
+                        <li class="kt-nav__item active">
+                            <a class="kt-nav__link active" href="/user/account" role="tab">
                                 <span class="kt-nav__link-icon"><i class="flaticon-feed"></i></span>
                                 <span class="kt-nav__link-text">Paramètres du compte</span>
                             </a>
@@ -76,11 +76,11 @@
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
-                        <h3 class="kt-portlet__head-title">Information personnelles <small>Modifier</small></h3>
+                        <h3 class="kt-portlet__head-title">{{ page }} <small>Modifier</small></h3>
                     </div>
                 </div>
-                {#<form class="kt-form kt-form--label-right" id="kt_profile_form" method="post">#}
-                {{ form_start(form, { 'attr': {'class': 'kt-form kt-form--label-right dropzone', 'id':'kt_profile_form' }}) }}
+
+                {#{{ form_start(form, { 'attr': {'class': 'kt-form kt-form--label-right dropzone', 'id':'kt_profile_form' }}) }}
                     <div class="kt-portlet__body">
                         <div class="kt-section kt-section--first">
                             <div class="kt-section__body">
@@ -92,7 +92,7 @@
                                 <div class="form-group row">
                                     <label class="col-xl-3 col-lg-3 col-form-label">Avatar</label>
                                     <div class="col-lg-9 col-xl-6">
-                                        <div class="kt-avatar kt-avatar--outline kt-avatar--circle-" id="kt_profile_avatar">
+                                        #}{#<div class="kt-avatar kt-avatar--outline kt-avatar--circle-" id="kt_profile_avatar">
                                             <div class="kt-avatar__holder" style="background-image: url({{ asset("media/users/100_3.jpg") }});"></div>
                                             <label class="kt-avatar__upload" data-toggle="kt-tooltip" title="" data-original-title="Change avatar">
                                                 <i class="fa fa-pen"></i>
@@ -101,16 +101,15 @@
                                             <span class="kt-avatar__cancel" data-toggle="kt-tooltip" title="" data-original-title="Cancel avatar">
                                                     <i class="fa fa-times"></i>
                                                 </span>
-                                        </div>
+                                        </div>#}{#
                                         {{ form_widget(form.file) }}
                                     </div>
                                 </div>
 
-
                                 <div class="form-group row">
                                     <label class="col-xl-3 col-lg-3 col-form-label">{{ form_label(form.prenom) }}</label>
                                     <div class="col-lg-9 col-xl-6">
-                                       {{ form_widget(form.prenom) }}
+                                        {{ form_widget(form.prenom) }}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -156,8 +155,8 @@
                             </div>
                         </div>
                     </div>
-                {{ form_end(form) }}
-                {#</form>#}
+                {{ form_end(form) }}#}
+
             </div>
         </div>
     </div>
